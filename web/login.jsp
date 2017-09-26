@@ -2,38 +2,99 @@
 <%@ taglib uri="http://java.sun.com/jsf/core" prefix="f"%>
 
 <f:view>
-<html>
-<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<html lang="en">
 
-<head>
-<title>Login and Registration</title>
-</head>
+<style>
+form {
+    border: 3px solid #f1f1f1;
+}
 
-<body leftmargin="0" rightmargin="0" topmargin="40" bottommargin="0">
-  <center><h:form>
-  				<h:panelGrid width="375px" bgcolor="#e6edfd" columns="2" border="0">
-					<f:facet name="header">
-					<h:outputText value="User Login"/>
-				    </f:facet>
-					
-					<h:outputText value="Enter Login ID:"/>
-					<h:inputText id="loginname" value="#{SimpleLogin.loginname}" />
-                                       
-					<h:outputText value="Enter Password: "/>
-					<h:inputSecret id="password" value="#{SimpleLogin.password}" />
+input[type=text], input[type=password] {
+    width: 100%;
+    padding: 12px 20px;
+    margin: 8px 0;
+    display: inline-block;
+    border: 1px solid #ccc;
+    box-sizing: border-box;
+}
 
-					<h:outputText value=" "/>
-					<h:commandButton value="Login" action="#{SimpleLogin.CheckValidUser}" />
-                                        
-                                        
+button {
+    background-color: #4CAF50;
+    color: white;
+    padding: 14px 20px;
+    margin: 8px 0;
+    border: none;
+    cursor: pointer;
+    width: 100%;
+}
 
-					
-				</h:panelGrid>
-                                        
-    </h:form>
-                                        
-                                        
-	</center>
-  </body>
- </html>
+button:hover {
+    opacity: 0.8;
+}
+
+.cancelbtn {
+    width: auto;
+    padding: 10px 18px;
+    background-color: #f44336;
+}
+
+.imgcontainer {
+    text-align: center;
+    margin: 24px 0 12px 0;
+}
+
+img.avatar {
+    width: 40%;
+    border-radius: 50%;
+}
+
+.container {
+    padding: 16px;
+}
+
+span.psw {
+    float: right;
+    padding-top: 16px;
+}
+
+/* Change styles for span and cancel button on extra small screens */
+@media screen and (max-width: 300px) {
+    span.psw {
+       display: block;
+       float: none;
+    }
+    .cancelbtn {
+       width: 100%;
+    }
+}
+</style>
+<body>
+
+<h2>Login Form</h2>
+
+<h:form>
+  <div class="imgcontainer">
+      <img src="download.jpg" alt="Avatar" class="avatar">
+  </div>
+
+  <div class="container">
+    <h:outputText value="Login ID:"/>
+    <h:inputText id="loginname" value="#{SimpleLogin.loginname}" />
+
+    <h:outputText value="Password: "/>
+    <h:inputSecret id="password" value="#{SimpleLogin.password}" />
+        
+    <h:outputText value=" "/>
+    <h:commandButton value="Login" action="#{SimpleLogin.CheckValidUser}" />
+    <input type="checkbox" checked="checked"> Remember me
+  </div>
+
+  <div class="container" style="background-color:#f1f1f1">
+    <button type="button" class="cancelbtn">Cancel</button>
+    <span class="psw">Forgot <a href="#">password?</a></span>
+  </div>
+   </h:form>
+
+</body>
+</html>
 </f:view>

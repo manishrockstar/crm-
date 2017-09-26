@@ -1,14 +1,56 @@
+<!DOCTYPE html>
 <html>
-<title>W3.CSS</title>
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+<head>
+<style>
+#mySidenav a {
+    position: absolute;
+    left: -80px;
+    transition: 0.3s;
+    padding: 15px;
+    width: 100px;
+    text-decoration: none;
+    font-size: 20px;
+    color: white;
+    border-radius: 0 5px 5px 0;
+}
+
+#mySidenav a:hover {
+    left: 0;
+}
+
+#about {
+    top: 20px;
+    background-color: #4CAF50;
+}
+
+#blog {
+    top: 80px;
+    background-color: #2196F3;
+}
+
+#projects {
+    top: 140px;
+    background-color: #f44336;
+}
+
+#contact {
+    top: 200px;
+    background-color: #555
+}
+</style>
+</head>
 <body>
 
-<div class="w3-container">
-  <h2>CRM APPLICATION</h2>
-  <a href="persondetails.jsp" class="w3-button w3-black">Create Ticket</a>
-  <a href="data.jsp" class="w3-button w3-black">View Ticket</a>
+<div id="mySidenav" class="sidenav">
+  <a href="persondetails.jsp" id="about">Create Ticket</a>
+  <a href="data.jsp" id="blog">View Ticket</a>
   
 </div>
+
+<div style="margin-left:80px;">
+  <h2>Hoverable Sidenav Buttons</h2>
+  <p>Hover over the buttons in the left side navigation to open them.</p>
+</div>
+     
 </body>
-</html>
+</html> 
