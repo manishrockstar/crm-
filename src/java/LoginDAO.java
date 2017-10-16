@@ -12,12 +12,12 @@ public class LoginDAO {
         ResultSet rs = null;
 
         try {
-            System.out.println("B4 getConnection");
+            //System.out.println("B4 getConnection");
             con = DataConnect.getConnection();
             if (con == null) {
-                System.out.println("con ==null");
+                //System.out.println("con ==null");
             }
-            ps = con.prepareStatement("Select count(*) as count from Users where uname = ? and password = ?");
+            ps = con.prepareStatement("Select count(*) as count from users where uname = ? and password = ?");
 
             ps.setString(1, user);
             ps.setString(2, password);
@@ -31,7 +31,7 @@ public class LoginDAO {
                 count++;
             }
             if (count > 0) {
-                System.out.println("size>0");
+                //System.out.println("size>0");
                 return true;
             }
         } catch (SQLException ex) {

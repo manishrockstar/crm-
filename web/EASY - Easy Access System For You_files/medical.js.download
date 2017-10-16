@@ -1,0 +1,103 @@
+var objmedical; 
+var hdnMedicalcount=0; 
+
+ 
+ 
+function GetmedicalAjaxData()
+{
+    var txtmedicalvalues=document.getElementById("txtmedicalvalues")
+   
+   if(document.getElementById("txtmedicalvalues").value=="")
+    //if (txtmedicalvalues.value=="") //value of text box  null
+    {
+   
+        objmedical=getXMLHTTPRequest();
+        if(objmedical!=null)
+        {
+            var randomnumber = Math.floor(Math.random()*1000001)
+            strURLmedical =strURLmedical + randomnumber;
+            objmedical.onreadystatechange =  ProcessResponsemedical;
+            objmedical.open("GET", strURLmedical,  true);
+            objmedical.send(null);  
+        }
+        return false;
+    }
+    if(document.getElementById("txtmedicalvalues").value!="")
+    //if(txtmedicalvalues.value!="")//value of text box not null
+    {
+  
+ 
+        var txtmedicalvalues=document.getElementById("txtmedicalvalues")
+        var mySplitResult = txtmedicalvalues.value.split(",");
+        if (mySplitResult[0]==1)
+        {
+            //ShowLinkButton("lstmedical");
+            hdnMedicalcount= document.getElementById("hdnMedicalListCount");
+           // hdnMedicalcount.value= parseInt(hdnMedicalcount.value) + 0;  
+        }
+        else 
+        {
+            HideLinkButton("lstmedical");
+           
+        }
+        if (mySplitResult[1]==1)
+        {
+              ShowLinkButton("lstnoncriminal");
+              hdnMedicalcount= document.getElementById("hdnMedicalListCount");
+             // hdnMedicalcount.value= parseInt(hdnMedicalcount.value) + 0;  
+        }
+        else 
+        {
+            HideLinkButton("lstnoncriminal");
+        }
+    }
+   
+}
+ 
+ function ProcessResponsemedical()
+ {
+      if(objmedical.readyState == 4)
+      {
+          if(objmedical.status == 200)
+          {
+                 var retvalmedical=objmedical.responseText; //retvalmedical shows the values from medical webservice
+               
+               
+              
+                 if ( retvalmedical!="")
+                 { 
+                      var mySplitResult = retvalmedical.split(",");
+                 
+                      if (mySplitResult[0]==1)
+                      {
+                          //ShowLinkButton("lstmedical");//function to show link buttton 
+                          hdnMedicalcount= document.getElementById("hdnMedicalListCount");
+                         // hdnMedicalcount.value= parseInt(hdnMedicalcount.value) + 1;  
+                      }
+                      else 
+                      {
+                          HideLinkButton("lstmedical");//function to hide link buttton 
+                         
+                      }
+                      
+                      if(mySplitResult[1]==1)
+                      {
+                          ShowLinkButton("lstnoncriminal");
+                          hdnMedicalcount= document.getElementById("hdnMedicalListCount");    
+                        //  hdnMedicalcount.value= parseInt(hdnMedicalcount.value) + 1;  
+                      }
+                      else 
+                      {
+                          HideLinkButton("lstnoncriminal");
+                      }
+                 }                   
+                 else
+                 {
+                      HideLinkButton("lstmedical");
+                      HideLinkButton("lstnoncriminal");
+                 }
+          }       
+      }
+ }
+ 
+ 

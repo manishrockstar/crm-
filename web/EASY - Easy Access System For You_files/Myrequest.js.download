@@ -1,0 +1,46 @@
+﻿function getmyRequestdata() {
+
+////    var retrievebutton = document.getElementById("imgretrieveMyrequest")
+////    retrievebutton.src = 'images/Refresh_my_request.png';
+    LoadMyrequestdivDataAgain();
+    lnkMyrequestHide();
+
+    GetMyrequestEBSData(); // in MyrequestEBS.js
+    GetmySpectrumRequestData();  // in MyspectrumRequest.js
+    $("#divRequest iframe").attr({ 'src': 'RequestoneView.aspx'
+    });
+}
+
+
+function LoadMyrequestdivDataAgain() {
+   
+    var ul = document.getElementById("ulmyrequest")
+    var txt = document.getElementById("hdnUlmyrequesttext")
+    if (txt.value == "") {
+        txt.value = ul.innerHTML;
+    }
+    else {
+        $('#ulmyrequest').html(txt.value);
+    }
+}
+
+
+function lnkMyrequestHide() {
+
+    HideLinkButton("lstmyspectleaves");
+    HideLinkButton("lstmyspectreg");
+    HideLinkButton("lstmyoncallrequest");
+    HideLinkButton("lstmyshiftAllow");
+    HideLinkButton("lstMyMarital");
+    HideLinkButton("lstMyNamech");
+    HideLinkButton("lstMypassport");
+    HideLinkButton("lstMyProfile");
+    HideLinkButton("lstMyReportch");
+    HideLinkButton("lstMySepReq");
+    HideLinkButton("lstMyTraining");
+    HideLinkButton("lstMyExp");
+    HideLinkButton("lstMyTravel");
+    HideLinkButton("lstMypo");
+    HideLinkButton("lstMyprojectchange");
+    HideLinkButton("lstMyServiceOrder");
+}

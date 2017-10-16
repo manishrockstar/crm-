@@ -1,0 +1,108 @@
+﻿var objsp; var hdnMySpectrumRequestCount;
+
+function GetmySpectrumRequestData()////function called in EASYhome foe accesing Spectrum data
+{
+
+    document.getElementById("txtMySpectrumRequest").value = "";
+    ShowLinkButton("limyrequest");
+    var lnk = document.getElementById("lblmyrequest");
+
+
+    lnk.firstChild.replaceData(0, lnk.firstChild.nodeValue.length, "Data loading please wait...");
+   
+    if (document.getElementById("txtMySpectrumRequest").value == "") {
+
+        objsp = getXMLHTTPRequest();
+        if (objsp != null) {
+            var randomnumber = Math.floor(Math.random() * 1000001)
+            strURLmyspectrumrequest = strURLmyspectrumrequest + randomnumber
+            objsp.onreadystatechange = ProcessResponseMyspectrumReq;
+            objsp.open("GET", strURLmyspectrumrequest, true);
+            objsp.send(null);
+        }
+        return false;
+    }
+}
+
+
+function LoadmyrequestSpectrumdatafromTextbox() {
+    if (document.getElementById("txtMySpectrumRequest").value != "") {
+        var txtMySpectrumRequest = document.getElementById("txtMySpectrumRequest")
+        lnkshowMyspectrumReq(txtMySpectrumRequest.value);
+        intWebserviceMyReqCount = intWebserviceMyReqCount + 1;
+        document.getElementById("hdnMySpectrumRequestCount").title = "Completed";
+        
+        showMyrequestmsg("Myspectrum"); //  Added by  urvesh
+    }
+    else {
+        intWebserviceMyReqCount = intWebserviceMyReqCount + 1;
+    }
+
+
+}
+
+
+function ProcessResponseMyspectrumReq() {
+    ShowLinkButton("limyrequest");
+    var lnk = document.getElementById("lblmyrequest");
+
+    lnk.firstChild.replaceData(0, lnk.firstChild.nodeValue.length, "Data loading please wait...");
+   
+    
+     if (objsp.readyState == 4) {
+         if (objsp.status == 200) {
+
+           
+            var retvalsp = objsp.responseText;
+            
+            if (CheckIsSessionAvailable(retvalsp) == true) // check session is availabel if not available then value of retvalsp is "NoSession".
+            {
+
+                if (retvalsp != null && retvalsp != "") {
+
+                    lnkshowMyspectrumReq(retvalsp); //retvalsp gives the data from ajax
+                    document.getElementById("hdnMySpectrumRequestCount").title = "Completed";
+                }
+                else {
+                    document.getElementById("hdnMySpectrumRequestCount").title = "";
+                }
+                intWebserviceMyReqCount = intWebserviceMyReqCount + 1;
+               
+                showMyrequestmsg("Myspectrum");
+            }
+
+        }
+    }
+}
+
+function lnkshowMyspectrumReq(retval)//funstion to split with (,) and show link
+{
+    var mySplitResult = retval.split(",");
+    if (mySplitResult.length > 0)
+        AssignLinkValuemySpectrum("lstmyspectleaves", "lblmyspectleaves", mySplitResult[0]);
+    if (mySplitResult.length > 1)
+        AssignLinkValuemySpectrum("lstmyspectreg", "lblmyspectreg", mySplitResult[1]);
+    if (mySplitResult.length > 2)
+        AssignLinkValuemySpectrum("lstmyoncallrequest", "lblmyoncallrequest", mySplitResult[2]);
+    if (mySplitResult.length > 3)
+        AssignLinkValuemySpectrum("lstmyshiftAllow", "lblmyshiftAllow", mySplitResult[3]);
+    
+}
+
+function AssignLinkValuemySpectrum(objlst, objlnk, objSplitResult) {
+   
+    var strNameValue;
+    strNameValue = objSplitResult.split("-")
+    if (strNameValue[1] != 0) {
+        ShowLinkButton(objlst);
+        var browserName = navigator.appName
+        var lnk = document.getElementById(objlnk);
+        lnk.onclick = LoadWorklistdivDataAgain
+        var elem = lnk;
+        var bold = document.createElement("b");
+        bold.appendChild(document.createTextNode("- " + strNameValue[1]));
+        elem.appendChild(bold);
+        hdnMySpectrumRequestCount = document.getElementById("hdnMySpectrumRequestCount");
+        hdnMySpectrumRequestCount.value = parseInt(hdnMySpectrumRequestCount.value) + 1;
+    }
+}

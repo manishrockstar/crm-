@@ -17,9 +17,9 @@ import java.sql.Statement;
 class DeleteDAO {
   
     
-    public static boolean delete(SimpleDelete n) throws SQLException
+    public static boolean delete(String emp) throws SQLException
     {
-       String emp=n.emp_id;
+       String emp_id=emp;
        Connection con = null;
 		Statement st = null;
                 ResultSet rs =null;
@@ -27,12 +27,12 @@ class DeleteDAO {
                 try {
 
 		
-                         System.out.println("B4 Delete");
+                         //System.out.println("B4 Delete");
                          
 			con = DataConnect.getConnection();
                         st = con.createStatement();
                         
-                        String query="delete from reg where emp_id="+emp;
+                        String query="delete from reg where emp_id="+emp_id;
                         
                         System.out.println(query);
                         int i = st.executeUpdate(query);

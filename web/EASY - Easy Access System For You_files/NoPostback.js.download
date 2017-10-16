@@ -1,0 +1,521 @@
+function CallDelegationWindowNew(obj, strValues, strFlag) {
+             if (strFlag == "DelInfoWorklist") {
+
+                 document.getElementById('hdnSelectedEmpID').value = strValues;
+
+                 strFlag = "DelInfo";
+             }
+
+            mymessage = "N";
+
+            obj = document.getElementById(obj); //restructure by anand
+
+
+
+            if (navigator.appName == "Microsoft Internet Explorer") {
+
+                if (obj.innerText != "") {
+
+                    var divTitleText = document.getElementById('DivPopup');
+                    divTitleText.innerText = "You have delegation for " + obj.innerText + ". Login to " + obj.innerText + " application as "
+                    divTitleText.className = "ClsDivPopupIE"
+
+                }
+                else {
+                    var divTitleText = document.getElementById('DivPopup');
+                    divTitleText.innerText = "You have delegation for " + obj.alt + ". Login to " + obj.alt + " application as "
+                    divTitleText.className = "ClsDivPopupIE"
+
+
+                }
+
+                if (obj.alt == "") {
+                    return false;
+                }
+            }
+
+            if (navigator.appName == "Netscape") {
+                if (obj.textContent != "") //|| (obj.textContent!=txtvalue))
+                {
+                    var divTitleText = document.getElementById('DivPopup');
+                    divTitleText.textContent = "You have delegation for " + obj.textContent + ". Login to " + obj.textContent + " application as "
+                    divTitleText.className = "ClsDivPopupOther"
+                }
+                else {
+                    var divTitleText = document.getElementById('DivPopup');
+                    divTitleText.textContent = "You have delegation for " + obj.alt + ". Login to " + obj.alt + " application as "
+                    divTitleText.className = "ClsDivPopupOther"
+                }
+                if (obj.alt == "") {
+                    return false;
+                }
+
+            }
+            if (obj == '') {
+                return false;
+            }
+            else if (obj.disabled == true) {
+                return false;
+            }
+            var ddluser = document.getElementById('ddlDelUser');
+            var strTextAndValue = "";
+            var ddlLength = ddluser.length;
+            var hdnDelegationDDLUsers = document.getElementById('hdnDelegationDDLUsers')
+            var i = 0;
+
+            for (i = 0; i <= ddluser.length; i++) {
+                //ddluser.options.remove(i);  //changed by urevsh
+                ddluser.innerHTML = "";
+            }
+
+
+
+            var Usersplit = hdnDelegationDDLUsers.value.split("#")
+
+            // var hdnDelegationDDLUsersMsat = hdnDelegationDDLUsers.value.split("*")
+            // var Usersplit = hdnDelegationDDLUsersMsat[0].split("#")
+            ////            alert(hdnDelegationDDLUsersMsat[0]);
+            ////            alert(hdnDelegationDDLUsersMsat[1]);
+            ////            alert(Usersplit[0]);
+          //  debugger;
+
+            var j = 0;
+            for (j = 0; j < Usersplit.length; j++) {
+
+                var UserNameAndID = Usersplit[j].split(",");
+                var msatuser = UserNameAndID[1].split("*");
+
+                var strAppName = msatuser[0].split("_");
+                //alert(UserNameAndID[1]);
+                ;
+                if (strAppName[1] == "self") {
+                    if (strFlag == "FavApp") {
+
+                        ddluser.options[ddluser.length] = new Option("Self", "####"+ strValues);
+                        document.getElementById('hdnSelfApplicationName').value = obj.id;
+                    }
+                    else {
+                        ddluser.options[ddluser.length] = new Option("Self", UserNameAndID[1]);
+                        document.getElementById('hdnSelfApplicationName').value = obj.id;
+                    }
+                }
+
+                if (obj.id == "lnkSpectrumMsat" || $('#' + obj.id + ' p').text() == "Spectrum") {
+                    if ((strAppName[1] =="Spectrum") || (strAppName[1] == "Spectrum")) {
+
+                        ddluser.options[ddluser.length] = new Option(UserNameAndID[0], UserNameAndID[1]);
+                        document.getElementById('hdnSelfApplicationName').value =  obj.id;
+
+                    }
+                }
+                if (obj.id == "EBSHRLink" || $('#' + obj.id + ' p').text() == "PeopleSoft HR") {
+                    if ((strAppName[1] == "PeopleSoft HR") || (strAppName[1] == "PeopleSoft HR")) {
+                        //  if (strAppName[1] == "Peoplesoft HR"){
+                        ddluser.options[ddluser.length] = new Option(UserNameAndID[0], UserNameAndID[1]);
+                        document.getElementById('hdnSelfApplicationName').value = obj.id;
+
+                    }
+                }
+                if (obj.id == "EBSFSLink" || $('#' + obj.id + ' p').text() == "PeopleSoft Finance") {
+                    if (strAppName[1] == "PeopleSoft Finance") {
+                        ddluser.options[ddluser.length] = new Option(UserNameAndID[0], UserNameAndID[1]);
+                        document.getElementById('hdnSelfApplicationName').value = obj.id;
+
+
+                    }
+                }
+
+
+
+                if (obj.id == "PRLink" || $('#' + obj.id + ' p').text() == "Purchase Requisition") {
+
+                    if (strAppName[1] == "Purchase Requisition") {
+                        ddluser.options[ddluser.length] = new Option(UserNameAndID[0], UserNameAndID[1]);
+                        document.getElementById('hdnSelfApplicationName').value =  obj.id;
+
+
+                    }
+                }
+                if (obj.id == "VISALink" || $('#' + obj.id + ' p').text() == "Visa Processing") {
+                    if (strAppName[1] == "Visa Processing") {
+                        ddluser.options[ddluser.length] = new Option(UserNameAndID[0], UserNameAndID[1]);
+                        document.getElementById('hdnSelfApplicationName').value =  obj.id;
+
+                    }
+                }
+                //space is appende to obj.innerHTML for conditions in favourites"
+                if (obj.id == "lnkVisitingCard" || $('#' + obj.id + ' p').text() == "Visiting Card ") {
+
+                  //  UserNameAndID[1] = UserNameAndID[1].replace("CS(STD/ISD and Visiting Card)", "Visiting Card")
+                    if (strAppName[1] == " Visiting Card") {
+                        ddluser.options[ddluser.length] = new Option(UserNameAndID[0], UserNameAndID[1]);
+                        document.getElementById('hdnSelfApplicationName').value =  obj.id;
+                    }
+                }
+                //space is appende to obj.innerHTML for conditions in favourites"
+
+                if (obj.id == "STDISDLink" || $('#' + obj.id + ' p').text() == "STD/ISD ") {
+
+                    if (strAppName[1] == "CS Apps Portal") {
+
+                       // UserNameAndID[1] = UserNameAndID[1].replace('<% Response.Write(Encryptstring("CS(STD/ISD and Visiting Card)")); %>', '<% Response.Write(Encryptstring("STD/ISD")); %>')
+                        ddluser.options[ddluser.length] = new Option(UserNameAndID[0], UserNameAndID[1]);
+                        document.getElementById('hdnSelfApplicationName').value = obj.id;
+                    }
+                }
+
+                //QSPACE delegation condition added on 26 Apr 2013
+                if (obj.id == "QSpaceLink" || $('#' + obj.id + ' p').text() == "QSPACE") {
+                    if (strAppName[1] == "QSPACE") {
+                        ddluser.options[ddluser.length] = new Option(UserNameAndID[0], UserNameAndID[1]);
+                        document.getElementById('hdnSelfApplicationName').value =  obj.id;
+
+                    }
+                }
+
+                if (obj.id == "BusinessCardLink" || $('#' + obj.id + ' p').text() == "Business Card") {
+
+                    if (strAppName[1] == "CS Apps Portal") {
+                        ddluser.options[ddluser.length] = new Option(UserNameAndID[0], UserNameAndID[1]);
+                        document.getElementById('hdnSelfApplicationName').value = obj.id;
+                    }
+                }
+
+                if (obj.id == "SPROCLink" || $('#' + obj.id + ' p').text() == "Service Procurement (SPROC)") {
+                    if (strAppName[1] == "Service Procurement (SPROC)") {
+                        ddluser.options[ddluser.length] = new Option(UserNameAndID[0], UserNameAndID[1]);
+                        document.getElementById('hdnSelfApplicationName').value = obj.id;
+
+                    }
+                }
+
+                if (obj.id == "BSCLink" || $('#' + obj.id + ' p').text() == "Balanced Score Card (BSC)") {
+                    if (strAppName[1] == "Balanced Score Card (BSC)") {
+                        ddluser.options[ddluser.length] = new Option(UserNameAndID[0], UserNameAndID[1]);
+                        document.getElementById('hdnSelfApplicationName').value = obj.id;
+
+                    }
+                }
+
+                if (obj.id == "VMSLink" || $('#' + obj.id + ' p').text() == "Visitor Management System (VMS)") {
+                    if (strAppName[1] == "CS Apps Portal") {
+                        ddluser.options[ddluser.length] = new Option(UserNameAndID[0], UserNameAndID[1]);
+                        document.getElementById('hdnSelfApplicationName').value = obj.id;
+
+                    }
+                }
+
+                if (obj.id == "CIODeskLink" || $('#' + obj.id + ' p').text() == "CIO CR Tool") {
+                    if (strAppName[1] == "CIO CR Tool") {
+                        ddluser.options[ddluser.length] = new Option(UserNameAndID[0], UserNameAndID[1]);
+                        document.getElementById('hdnSelfApplicationName').value = obj.id;
+
+                    }
+                }
+
+                if (obj.id == "DartLink" || $('#' + obj.id + ' p').text() == "DART") {
+                    if (strAppName[1] == "DART") {
+                        ddluser.options[ddluser.length] = new Option(UserNameAndID[0], UserNameAndID[1]);
+                        document.getElementById('hdnSelfApplicationName').value = obj.id;
+
+                    }
+                }
+
+                if (obj.id == "InventoryLink" || $('#' + obj.id + ' p').text() == "Inventory") {
+                    if (strAppName[1] == "CS Apps Portal") {
+                        ddluser.options[ddluser.length] = new Option(UserNameAndID[0], UserNameAndID[1]);
+                        document.getElementById('hdnSelfApplicationName').value = obj.id;
+
+                    }
+                }
+
+                if (obj.id == "PACEHRLink" || $('#' + obj.id + ' p').text() == "PACE-HR") {
+                    if (strAppName[1] == "PACE-HR") {
+                        ddluser.options[ddluser.length] = new Option(UserNameAndID[0], UserNameAndID[1]);
+                        document.getElementById('hdnSelfApplicationName').value = obj.id;
+
+                    }
+                }
+
+                if (obj.id == "PACEFINLink" || $('#' + obj.id + ' p').text() == "PACE-FIN") {
+                    if (strAppName[1] == "PACE-FIN") {
+                        ddluser.options[ddluser.length] = new Option(UserNameAndID[0], UserNameAndID[1]);
+                        document.getElementById('hdnSelfApplicationName').value = obj.id;
+
+                    }
+                }
+
+                if (obj.id == "CSAppPortalLink" || $('#' + obj.id + ' p').text() == "CS Apps Portal") {
+                    if (strAppName[1] == "CS Apps Portal") {
+                        ddluser.options[ddluser.length] = new Option(UserNameAndID[0], UserNameAndID[1]);
+                        document.getElementById('hdnSelfApplicationName').value = obj.id;
+
+                    }
+                }
+
+                if (obj.id == "IDCardLink" || $('#' + obj.id + ' p').text() == "ID Card") {
+                    if (strAppName[1] == "CS Apps Portal") {
+                        ddluser.options[ddluser.length] = new Option(UserNameAndID[0], UserNameAndID[1]);
+                        document.getElementById('hdnSelfApplicationName').value = obj.id;
+
+                    }
+                }
+
+                if (obj.id == "CMSLink" || $('#' + obj.id + ' p').text() == "Cab Management System (CMS)") {
+                    if (strAppName[1] == "CS Apps Portal") {
+                        ddluser.options[ddluser.length] = new Option(UserNameAndID[0], UserNameAndID[1]);
+                        document.getElementById('hdnSelfApplicationName').value = obj.id;
+
+                    }
+                }
+
+                if (obj.id == "VehicleParkingLink" || $('#' + obj.id + ' p').text() == "Vehicle Parking") {
+                    if (strAppName[1] == "CS Apps Portal") {
+                        ddluser.options[ddluser.length] = new Option(UserNameAndID[0], UserNameAndID[1]);
+                        document.getElementById('hdnSelfApplicationName').value = obj.id;
+
+                    }
+                }
+
+                if (obj.id == "BusFacilityLink" || $('#' + obj.id + ' p').text() == "Bus Facility") {
+                    if (strAppName[1] == "CS Apps Portal") {
+                        ddluser.options[ddluser.length] = new Option(UserNameAndID[0], UserNameAndID[1]);
+                        document.getElementById('hdnSelfApplicationName').value = obj.id;
+
+                    }
+                }
+
+                if (obj.id == "ShuttleLink" || $('#' + obj.id + ' p').text() == "Shuttle Booking System") {
+                    if (strAppName[1] == "CS Apps Portal") {
+                        ddluser.options[ddluser.length] = new Option(UserNameAndID[0], UserNameAndID[1]);
+                        document.getElementById('hdnSelfApplicationName').value = obj.id;
+
+                    }
+                }
+
+                if (obj.id == "SMSLink" || $('#' + obj.id + ' p').text() == "Space Management System (SMS)") {
+                    if (strAppName[1] == "Space Management System (SMS)") {
+                        ddluser.options[ddluser.length] = new Option(UserNameAndID[0], UserNameAndID[1]);
+                        document.getElementById('hdnSelfApplicationName').value = obj.id;
+
+                    }
+                }
+
+                if (obj.id == "VChannelLink" || $('#' + obj.id + ' p').text() == "VChannel") {
+                    if (strAppName[1] == "VChannel") {
+                        ddluser.options[ddluser.length] = new Option(UserNameAndID[0], UserNameAndID[1]);
+                        document.getElementById('hdnSelfApplicationName').value = obj.id;
+
+                    }
+                }
+
+                if (obj.id == "TechMCaresLink" || $('#' + obj.id + ' p').text() == "Tech-MCARES") {
+                    if (strAppName[1] == "Tech-MCARES") {
+                        ddluser.options[ddluser.length] = new Option(UserNameAndID[0], UserNameAndID[1]);
+                        document.getElementById('hdnSelfApplicationName').value = obj.id;
+
+                    }
+                }
+
+                if (obj.id == "MyTimeLink" || $('#' + obj.id + ' p').text() == "My Time") {
+                    if (strAppName[1] == "My Time") {
+                        ddluser.options[ddluser.length] = new Option(UserNameAndID[0], UserNameAndID[1]);
+                        document.getElementById('hdnSelfApplicationName').value = obj.id;
+
+                    }
+                }
+            }
+
+
+
+            ShowMessageToOwner(obj)
+
+            ddlLength = ddluser.length;
+
+            if (mymessage == "Y") {
+                return false;
+            }
+
+            
+            if (ddlLength > 1) {
+
+                if (mymessage == "N") {
+
+                   
+
+                    document.getElementById('hdnSelectedEmpID').value = ddluser.options[0].value;
+                    ddluser.selectedIndex = 0;
+                    DelegationPopup = new stickynote({ content: { divid: 'stickynote2', source: 'inline' }, pos: ['center', 'center'], showfrequency: 'always' })  //<--no comma following last setting!
+                    DelegationPopup.showhidenote('show');
+
+                    return false;
+
+                }
+                else {
+                    return false;
+                }
+            }
+            else {
+
+
+                CallUrlPage(strFlag, strValues);  //calling ajax page to open url if delegatio is not present. i.e  delegation window is not opening.
+
+                return true;
+            }
+
+
+        }
+
+        function CallUrlPage(strFlag,strValue) {
+            
+            objAjaxpage = getXMLHTTPRequest();
+            var Delegationapp=""
+            try
+            {
+          
+            if (objAjaxpage != null) {
+                var randomnumber = Math.floor(Math.random() * 1000001)
+                var strURL1 = "";
+             
+                if (strFlag == "DelInfo") {
+                     
+                     strURL1 = strURLIP +"frameAjax.aspx?AppInfo=" + document.getElementById('hdnSelfApplicationName').value + "&DelInfo=" + document.getElementById('hdnSelectedEmpID').value +"&rand=" + randomnumber;
+                     //strURL1 = strURLIP +"frameAjax.aspx?DelInfo=" + document.getElementById('hdnSelectedEmpID').value + "&AppInfo=" + document.getElementById('hdnSelfApplicationName').value + "&rand=" + randomnumber;
+                     Delegationapp = "DelInfo"
+                }
+                if (strFlag == "FavApp") {
+                   
+                    strURL1 = strURLIP +"frameAjax.aspx?FavApp=" + strValue
+                    Delegationapp = "FavApp"
+                }
+
+                   if (strFlag == "TagApp") {
+                  
+                    strURL1 = strURLIP +"frameAjax.aspx?tag=" + strValue
+                
+                }
+
+                
+
+                objAjaxpage.onreadystatechange = GetData;
+                objAjaxpage.open("GET", strURL1, true); //comes from Home.js
+                objAjaxpage.send(null);
+            }
+            return false;
+
+            
+        }
+        catch(e)
+        {
+            var setURL =""
+            if (Delegationapp == "DelInfo") {
+
+                setURL = "frame.aspx?Err=ajax&DelInfo=" + document.getElementById('hdnSelectedEmpID').value + "&AppInfo=" + document.getElementById('hdnSelfApplicationName').value + "&Errmessage : " + e.Message;
+
+            }
+            else if (Delegationapp == "FavApp") {
+
+                setURL = "frame.aspx?Err=ajax&FavApp=" + strValue + "&AppInfo=" + document.getElementById('hdnSelfApplicationName').value + "&Errmessage : " + e.Message;
+
+            }
+            else {
+
+                setURL = "frame.aspx?Err=ajax&tag=" + strValue + "&AppInfo=" + document.getElementById('hdnSelfApplicationName').value + "&Errmessage : " + e.Message;
+
+
+             }
+             window.open(setURL);
+           
+        }
+
+   }
+
+
+    function GetData()
+         {
+            try {
+
+              //  debugger;
+//             imgprogress= document.getElementById('imgprogress');
+//            imgprogress.src="images/smallProgress.gif";
+//             
+//             imgprogress.style.display="block";
+
+            if (objAjaxpage.readyState == 4) {
+               
+                if (objAjaxpage.status == 200) {
+
+                    var retval = escape(objAjaxpage.responseText);
+
+                   
+                   
+                  //  anch.href = retval;
+                  
+                    //anch.click();
+                   
+
+                    if (retval != null && retval != "NoSession" && retval != "" && retval != "IntranetNoSession" && retval != "InternetNoSession") {
+                    //  return  retval; //retval gives the data from ajax 
+
+                        window.open($("<div/>").html(unescape(retval)).text());
+                   // imgprogress.style.display="none";
+                    return false;
+
+
+
+                    }
+                    else {
+                        retval = "Error"
+                        alert('EASY Session Timed Out. Reloading...');
+                        window.location.href = "EasyLogin.aspx";
+                        return retval;
+
+                       
+                    }
+                   
+
+                   
+
+
+                }
+            }
+        
+
+        }
+        catch(e)
+        {
+
+         
+        }
+        }
+        function FindDelegationEmp() {
+            
+        var setURL = "";
+            StoreSelectedEmpID();
+
+
+           var anch = document.getElementById('btngonew');
+          //  anch.target = "_blank"
+
+          //  anch.href = "#";
+          //  anch.click();
+
+
+
+           DelegationPopup.showhidenote('hide');
+           var ddluser = document.getElementById('ddlDelUser');
+           var strFavSelf = ddluser.options[ddluser.selectedIndex].text;
+
+           var strAppValue = ddluser.options[ddluser.selectedIndex].value; ;
+
+               if( (strFavSelf.indexOf("Self")> -1) && (strAppValue.indexOf("####")> -1))
+               {
+                   CallUrlPage("FavApp", strAppValue.substring(4));
+            }
+            else
+            {
+            CallUrlPage("DelInfo",'');  //calling ajax page to open url after delegation window.
+       }
+
+
+        }

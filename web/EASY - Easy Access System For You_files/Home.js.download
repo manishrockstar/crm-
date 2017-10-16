@@ -1,0 +1,481 @@
+var strURLIP = "https://easy.techmahindra.com/";
+//var strURLIP = "http://10.5.11.171/EASY_TFS_PRODUCTION_INTERNET/";
+//var strURLIP = "http://localhost:56264/";
+//    
+var strURLmedical = strURLIP + 'medical.aspx?dummy=';
+var strURL = strURLIP + 'EBSAjax.aspx?dummy=';
+var strURLDelegation = strURLIP + 'DelegationSpectrumAjax.aspx?dummy=';
+var strURLtmap = strURLIP + 'TMapAjax.aspx?dummy=';
+var strURLVISA = strURLIP + 'VisaAjax.aspx?dummy=';
+var strMyrequestEBSURL = strURLIP + 'MyrequeastEBS.aspx?dummy=';
+var strURLmyspectrumrequest = strURLIP + 'MySpectrumRequest.aspx?dummy=';
+
+var intWebserviceCount = 0; var intTotalWebserviceCount = 4;
+
+var MSG = -1;
+var intWebserviceMyReqCount = 0;
+
+//var 
+function getXMLHTTPRequest() {
+       var xRequest = null;
+    if (window.XMLHttpRequest) {
+        xRequest = new XMLHttpRequest();
+    }
+    else if (typeof ActiveXObject != "undefined") {
+        xRequest = new ActiveXObject("Microsoft.XMLHTTP");
+    }
+    else {
+        xRequest = new ActiveXObject("Msxml2.XMLHTTP");
+
+    }
+    return xRequest;
+}
+
+
+
+function getXMLHTTPMYRequest() {
+    var xRequest1 = null;
+    if (window.XMLHttpRequest) {
+        xRequest1 = new XMLHttpRequest();
+    }
+    else if (typeof ActiveXObject != "undefined") {
+        xRequest1 = new ActiveXObject("Microsoft.XMLHTTP");
+    }
+    else {
+        xRequest1 = new ActiveXObject("Msxml2.XMLHTTP");
+
+    }
+    return xRequest1;
+}
+
+
+
+
+
+function lnkHide() {
+    //EBS
+    HideLinkButton("lstMarital");
+    HideLinkButton("lstNamech");
+    HideLinkButton("lstpassport");
+    HideLinkButton("lstExp");
+    HideLinkButton("lstprojectchange");
+    HideLinkButton("lstReportch");
+    HideLinkButton("lstSepReq");
+    HideLinkButton("lstTravel");
+    HideLinkButton("lstTraining");
+    HideLinkButton("lstServiceOrder");
+    HideLinkButton("lstpo");
+    HideLinkButton("lstProfile");
+    //spectrum
+    HideLinkButton("lstpl");
+    HideLinkButton("lstpenr");
+    HideLinkButton("lstshiftallowance");
+    HideLinkButton("lstOncallallowance");
+    //TMAP
+    HideLinkButton("lstSTD");
+    HideLinkButton("lstVCard");
+    HideLinkButton("lstVehicleSticker");
+    HideLinkButton("lstBusRegistration");
+    HideLinkButton("lstvisaApprover");
+    HideLinkButton("lstvisacob");
+    HideLinkButton("lstvisaLCA");
+    HideLinkButton("lstSTDAdmin");
+
+
+
+
+}
+
+
+
+
+function HideLinkButton(objlst) {
+
+
+
+    var lstname = document.getElementById(objlst);
+
+    if (lstname != null) {
+        lstname.style.display = "none";
+    }
+
+    if (objlst == "label") {
+
+        var tblMsg = document.getElementById("tblMSG");
+
+        tblMsg.style.display = "none";
+    }
+
+
+
+
+
+    if (objlst == "limyrequest") {
+
+        var tblMsg = document.getElementById("tblReqMSG");
+
+        tblMsg.style.display = "block";
+    }
+
+
+
+}
+
+function ShowLinkButton(objlst) {
+
+
+    var lst = document.getElementById(objlst);
+
+    if (lst != null) {
+        lst.style.display = "block";
+    }
+
+
+
+    if (objlst == "label") {
+
+        var tblMsg = document.getElementById("tblMSG");
+
+        tblMsg.style.display = "block";
+    }
+
+    if (objlst == "limyrequest") {
+
+        var tblMsg = document.getElementById("tblReqMSG");
+
+        tblMsg.style.display = "block";
+    }
+
+
+}
+
+
+function showMyrequestmsg(objlst) {
+
+
+
+    var intSpectrumRequest = document.getElementById("hdnMySpectrumRequestCount").value;
+    var txtMySpectrumRequest = document.getElementById("hdnMySpectrumRequestCount").title;
+    var intEBSRequest = document.getElementById("hdnMyrequestEBSlistCount").value;
+    var txtMyrequestEBSvalues = document.getElementById("hdnMyrequestEBSlistCount").title;
+
+    if ((intWebserviceMyReqCount == 3) || (intWebserviceMyReqCount == 1) || (intWebserviceMyReqCount == 0)) {
+        intWebserviceMyReqCount = 0;
+
+        var intTotalCount = parseInt(intSpectrumRequest) + parseInt(intEBSRequest);
+
+
+
+        if (txtMyrequestEBSvalues == "Completed" && txtMySpectrumRequest == "Completed") //1
+        {
+
+            HideLinkButton("limyrequest");
+            if (intTotalCount == 0) {
+
+                ShowLinkButton("limyrequest");
+                var lnk = document.getElementById("lblmyrequest");
+                lnk.firstChild.replaceData(0, lnk.firstChild.nodeValue.length, "No More Request Pending For You.");
+
+                //lnk.innerText="No More Pending Approvals.";
+            }
+        }
+
+        else if (txtMyrequestEBSvalues == "Completed") //2
+        {
+            ShowLinkButton("limyrequest");
+            var lnk = document.getElementById("lblmyrequest");
+            lnk.firstChild.replaceData(0, lnk.firstChild.nodeValue.length, "For Spectrum Request,Please try after some time.");
+        }
+
+        else if (txtMySpectrumRequest == "Completed") //2
+        {
+            ShowLinkButton("limyrequest");
+            var lnk = document.getElementById("lblmyrequest");
+            lnk.firstChild.replaceData(0, lnk.firstChild.nodeValue.length, "For PACE Request,Please try after some time.");
+        }
+        else {
+            ShowLinkButton("limyrequest");
+            var lnk = document.getElementById("lblmyrequest");
+            lnk.firstChild.replaceData(0, lnk.firstChild.nodeValue.length, "For Spectrum & PACE Request,Please try after some time.");
+        }
+
+        if (txtMySpectrumRequest == "" && txtMyrequestEBSvalues == "") {
+            if (intTotalCount == 0) {
+
+                ShowLinkButton("limyrequest");
+                var lnk = document.getElementById("lblmyrequest");
+                var strMsg = "No More Request Pending For You."; //+ "             "+ lnk.innerText
+                lnk.firstChild.replaceData(0, lnk.firstChild.nodeValue.length, "");
+                lnk.firstChild.replaceData(lnk.firstChild.nodeValue.length, lnk.firstChild.nodeValue.length, strMsg);
+            }
+        }
+    }
+}
+
+function showmsg(objlst) {
+
+    // document.getElementById("hdnTmaplistCount").title="Completed"; // written for internet version.
+
+    var intEBS = document.getElementById("hdnEBSlistCount").value;
+    var intSpectrum = document.getElementById("hdnSpectrumlistCount").value;
+    var intTmap = document.getElementById("hdnTmaplistCount").value;
+    var intVISA = document.getElementById("hdnVISAlistCount").value;
+    var intMedicalCount = document.getElementById("hdnMedicalListCount").value;
+    var txtEBS = document.getElementById("hdnEBSlistCount").title;
+    var txtSpectrum = document.getElementById("hdnSpectrumlistCount").title;
+    var txtTmap = document.getElementById("hdnTmaplistCount").title;
+    var txtVISA = document.getElementById("hdnVISAlistCount").title;
+    var strShowMessage = document.getElementById("hdnShowMessage").value;
+
+
+    if (txtEBS != "" && txtSpectrum != "" && txtTmap != "") {
+        var refreshbutton = document.getElementById("imgRetriveWorklist")
+        refreshbutton.disabled = false;
+    }
+
+
+    if (strShowMessage != "") {
+
+        ShowLinkButton("label");
+        var lnk = document.getElementById("labeltext");
+        var strMsg = "Please try after some time " + "for " + strShowMessage + " approvals."
+        lnk.firstChild.replaceData(0, lnk.firstChild.nodeValue.length, "");
+        lnk.firstChild.replaceData(lnk.firstChild.nodeValue.length, lnk.firstChild.nodeValue.length, strMsg);
+    }
+
+
+
+
+
+    var intTotalCount = parseInt(intEBS) + parseInt(intVISA) + parseInt(intTmap)
+
+
+    var hdnworklistMSG = document.getElementById("hdnWorklistMSG");
+    var count = hdnworklistMSG.value;
+
+
+
+    if (strShowMessage == "") {
+
+        if (intTotalCount > 0 && intWebserviceCount == 3)  // form webservice execution  and no error
+        {
+
+            ShowLinkButton("label");
+            var lnk = document.getElementById("labeltext");
+            var strMsg = ""; //+ "             "+ lnk.innerText
+            lnk.firstChild.replaceData(0, lnk.firstChild.nodeValue.length, "");
+            lnk.firstChild.replaceData(lnk.firstChild.nodeValue.length, lnk.firstChild.nodeValue.length, strMsg);
+
+            //page load after approving one of the requests
+            intWebserviceCount = 0;
+        }
+
+        else if (intTotalCount == 0 && intWebserviceCount == 3)  // from textbox/execution after click on any link nothing to show
+        {
+
+            ShowLinkButton("label");
+            var lnk = document.getElementById("labeltext");
+            var strMsg = "No More Worklist Approvals Pending For You."; //+ "             "+ lnk.innerText
+            lnk.firstChild.replaceData(0, lnk.firstChild.nodeValue.length, "");
+            lnk.firstChild.replaceData(lnk.firstChild.nodeValue.length, lnk.firstChild.nodeValue.length, strMsg);
+
+
+        }
+
+        else if (intTotalCount == 0 && intWebserviceCount == 0) // from textbox first time page load
+        {
+
+            ShowLinkButton("label");
+            var lnk = document.getElementById("labeltext");
+            var strMsg = "Please click Refresh Worklist to get pending approvals."; //+ "             "+ lnk.innerText
+            lnk.firstChild.replaceData(0, lnk.firstChild.nodeValue.length, "");
+            lnk.firstChild.replaceData(lnk.firstChild.nodeValue.length, lnk.firstChild.nodeValue.length, strMsg);
+
+
+        }
+
+
+
+        // intWebserviceCount = 0;
+
+
+
+
+    }
+
+
+}
+
+function CheckIsSessionAvailable(strValue) {
+    if (strValue == "IntranetNoSession") {
+
+        alert("EASY Session Timed Out. Reloading...");
+        var currentUrl = encodeURIComponent(window.location.href);
+        var n = currentUrl.replace("#", "");
+        window.location = n;
+
+        return false;
+    }
+    else if (strValue == "InternetNoSession") {
+
+
+        alert("EASY Session Timed Out. Kindly Relogin.");
+        var currentUrl = encodeURIComponent(window.location.href);
+        window.location = currentUrl;
+
+        return false;
+
+    }
+
+    else if (strValue == "NoSession") {
+
+        return false;
+    }
+    else {
+        return true;
+
+    }
+
+}
+
+
+
+
+
+function ShowMessage(objlst) {
+
+
+    var intEBS = document.getElementById("hdnEBSlistCount").value;
+    var intSpectrum = document.getElementById("hdnSpectrumlistCount").value;
+    var intTmap = document.getElementById("hdnTmaplistCount").value;
+    var intVISA = document.getElementById("hdnVISAlistCount").value;
+    var intSpectrumDel = document.getElementById("hdnDELlistcount").value;
+    var intMedicalCount = document.getElementById("hdnMedicalListCount").value;
+    var txtEBS = document.getElementById("hdnEBSlistCount").title;
+    var txtSpectrum = document.getElementById("hdnSpectrumlistCount").title;
+    var txtTmap = document.getElementById("hdnTmaplistCount").title;
+    var txtVISA = document.getElementById("hdnVISAlistCount").title;
+    var txtSpectrumDel = document.getElementById("hdnDELlistcount").title;
+
+    if (intWebserviceCount == intTotalWebserviceCount) {
+        var intTotalCount = parseInt(intEBS) + parseInt(intSpectrum) + parseInt(intTmap) + parseInt(intSpectrumDel) + parseInt(intMedicalCount);
+
+        //16 combination for the message in EASY worklist starts     
+        if (txtEBS == "Completed" && txtSpectrum == "Completed" && txtTmap == "Completed" && txtSpectrumDel == "Completed") //1
+        {
+            HideLinkButton("label");
+            if (intTotalCount == 0) {
+                ShowLinkButton("label");
+                var lnk = document.getElementById("labeltext");
+                lnk.firstChild.replaceData(0, lnk.firstChild.nodeValue.length, "No More Pending Approvals.");
+            }
+        }
+        else if (txtEBS == "Completed" && txtSpectrum == "Completed" && txtTmap == "Completed") //2
+        {
+            ShowLinkButton("label");
+            var lnk = document.getElementById("labeltext");
+            lnk.firstChild.replaceData(0, lnk.firstChild.nodeValue.length, "For Delegation worklist,Please try after some time.");
+        }
+        else if (txtEBS == "Completed" && txtSpectrum == "Completed" && txtSpectrumDel == "Completed")//3
+        {
+            ShowLinkButton("label");
+            var lnk = document.getElementById("labeltext");
+            lnk.firstChild.replaceData(0, lnk.firstChild.nodeValue.length, "For Corporate Services worklist,Please try after some time.");
+        }
+
+        else if (txtEBS == "Completed" && txtSpectrum == "Completed") //4
+        {
+            ShowLinkButton("label");
+            var lnk = document.getElementById("labeltext");
+            lnk.firstChild.replaceData(0, lnk.firstChild.nodeValue.length, "For Delegation & Corporate Services worklist,Please try after some time.");
+        }
+
+        else if (txtEBS == "Completed" && txtTmap == "Completed" && txtSpectrumDel == "Completed") //5
+        {
+            ShowLinkButton("label");
+            var lnk = document.getElementById("labeltext");
+            lnk.firstChild.replaceData(0, lnk.firstChild.nodeValue.length, "For Spectrum worklist,Please try after some time.");
+        }
+
+        else if (txtEBS == "Completed" && txtTmap == "Completed") //6
+        {
+            ShowLinkButton("label");
+            var lnk = document.getElementById("labeltext");
+            lnk.firstChild.replaceData(0, lnk.firstChild.nodeValue.length, "For Delegation & Spectrum worklist,Please try after some time.");
+        }
+        else if (txtEBS == "Completed" && txtSpectrumDel == "Completed") //7
+        {
+            ShowLinkButton("label");
+            var lnk = document.getElementById("labeltext");
+            lnk.firstChild.replaceData(0, lnk.firstChild.nodeValue.length, "For Spectrum & Corporate Services worklist,Please try after some time.");
+        }
+        else if (txtEBS == "Completed") //8
+        {
+            ShowLinkButton("label");
+            var lnk = document.getElementById("labeltext");
+            lnk.firstChild.replaceData(0, lnk.firstChild.nodeValue.length, "For Delegation,Corporate Services & Spectrum worklist,Please try after some time.");
+        }
+        else if (txtSpectrum == "Completed" && txtTmap == "Completed" && txtSpectrumDel == "Completed") //9
+        {
+
+            ShowLinkButton("label");
+            var lnk = document.getElementById("labeltext");
+            lnk.firstChild.replaceData(0, lnk.firstChild.nodeValue.length, "For PACE worklist,Please try after some time.");
+        }
+        else if (txtSpectrum == "Completed" && txtTmap == "Completed") //10
+        {
+            ShowLinkButton("label");
+            var lnk = document.getElementById("labeltext");
+            lnk.firstChild.replaceData(0, lnk.firstChild.nodeValue.length, "For PACE & Delegation worklist,Please try after some time.");
+        }
+        else if (txtSpectrum == "Completed" && txtSpectrumDel == "Completed") //11
+        {
+            ShowLinkButton("label");
+            var lnk = document.getElementById("labeltext");
+            lnk.firstChild.replaceData(0, lnk.firstChild.nodeValue.length, "For PACE,Corporate Services worklist,Please try after some time.");
+        }
+        else if (txtSpectrum == "Completed") //12
+        {
+            ShowLinkButton("label");
+            var lnk = document.getElementById("labeltext");
+            lnk.firstChild.replaceData(0, lnk.firstChild.nodeValue.length, "For PACE,Corporate Services & Delegation worklist,Please try after some time.");
+        }
+        else if (txtTmap == "Completed" && txtSpectrumDel == "Completed") //13
+        {
+            ShowLinkButton("label");
+            var lnk = document.getElementById("labeltext");
+            lnk.firstChild.replaceData(0, lnk.firstChild.nodeValue.length, "For PACE & Spectrum worklist,Please try after some time.");
+        }
+        else if (txtTmap == "Completed") //14
+        {
+            ShowLinkButton("label");
+            var lnk = document.getElementById("labeltext");
+            lnk.firstChild.replaceData(0, lnk.firstChild.nodeValue.length, "For PACE,Spectrum & Delegation worklist,Please try after some time.");
+        }
+        else if (txtSpectrumDel == "Completed") //15
+        {
+
+
+            ShowLinkButton("label");
+            var lnk = document.getElementById("labeltext");
+            lnk.firstChild.replaceData(0, lnk.firstChild.nodeValue.length, "For PACE,Spectrum & Corporate Services worklist,Please try after some time.");
+        }
+        else {
+            ShowLinkButton("label");
+            var lnk = document.getElementById("labeltext");
+            lnk.firstChild.replaceData(0, lnk.firstChild.nodeValue.length, "For PACE,Delegation,Corporate Services & Spectrum worklist,Please try after some time.");
+        }
+        //16 combination for the message in EASY worklist ends  
+
+
+        if (txtEBS == "" && txtSpectrum == "" && txtTmap == "" && txtSpectrumDel == "")
+            if (intTotalCount == 0) {
+
+                ShowLinkButton("label");
+                var lnk = document.getElementById("labeltext");
+                var strMsg = "No More Pending Approvals$." + "             " + lnk.innerText
+                lnk.firstChild.replaceData(0, lnk.firstChild.nodeValue.length, "");
+                lnk.firstChild.replaceData(lnk.firstChild.nodeValue.length, lnk.firstChild.nodeValue.length, strMsg);
+            }
+    }
+}

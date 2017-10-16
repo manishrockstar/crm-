@@ -1,0 +1,369 @@
+﻿// JScript File
+var maxDivId,currentDivId,strOriginal;
+ 
+//Our XmlHttpRequest object to get the auto suggestvar 
+var strGlobalURL="";
+
+function openSearchWindowApp(url)
+{
+window.open( url )
+}
+function getXmlHttpRequestObject() 
+{ 
+    if (window.XMLHttpRequest) 
+    {
+        return new XMLHttpRequest(); 
+    } 
+    else if(window.ActiveXObject) 
+    {
+        return new ActiveXObject("Microsoft.XMLHTTP"); 
+    }
+    else
+    {
+        alert("It's about time to upgrade don't you think?"); 
+      }
+}
+ var searchReq = getXmlHttpRequestObject();
+
+
+function CheckEnter(e) 
+{
+
+
+    var key = window.event ? e.keyCode : e.which;
+    
+
+    if (key==13)
+    {
+   var divSearch = document.getElementById('search_suggest') ;
+  
+if ((strGlobalURL!="##") &&(strGlobalURL!=""))
+{
+       window.open(strGlobalURL);
+       strGlobalURL="";
+ }  
+        var ss = document.getElementById('search_suggest');
+                   
+                 ss.innerHTML = '';
+                 
+                  ss.style.visibility='hidden';
+                   document.getElementById('txtSearch').value = "";
+      
+        return false;
+    }
+}
+
+// for escape key
+
+
+function CheckClick(e) 
+{
+
+
+    var key = window.event ? e.keyCode : e.which;
+   
+    if (key==0)
+    {
+ 
+   var divSearch = document.getElementById('search_suggest') ;
+
+       //window.open(strGlobalURL);
+       
+        var ss = document.getElementById('search_suggest');
+                   
+                 ss.innerHTML = '';
+                 
+                  ss.style.visibility='hidden';
+                   document.getElementById('txtSearch').value = "";
+     
+        return false;
+    }
+    
+    
+}
+
+
+
+
+//Called from keyup on the search textbox.//Starts the AJAX request.
+function searchSuggest(e) 
+{
+
+     var key = window.event ? e.keyCode : e.which;
+     
+   
+    
+     
+     
+     if (key==40 || key==38)
+     {
+    
+         scrolldiv(key); 
+     }
+     else
+     {
+     if (searchReq.readyState == 4 || searchReq.readyState == 0) 
+     {
+     
+    
+        var str = escape(document.getElementById('txtSearch').value);
+        strOriginal=str;
+      
+      
+        var strlen=str.length;
+        
+       
+       
+                if (strlen>1)
+                {
+                
+            
+                 var randomnumber = Math.floor(Math.random()*1000001)
+                var strURL = 'Result.aspx?search=' + str  +"&rnd="+ randomnumber;
+              
+                        searchReq.open("GET", strURL ,  true); 
+                        
+                        searchReq.onreadystatechange = handleSearchSuggest;
+                      
+                        searchReq.send(null); 
+                
+               }
+               else
+               {
+                var ss = document.getElementById('search_suggest');
+                   
+                 ss.innerHTML = '';
+                 
+                  ss.style.visibility='hidden';
+               
+               }
+        } 
+        
+      } 
+      
+      
+        
+}
+//Called when the AJAX response is returned.
+function handleSearchSuggest()
+ {
+ 
+
+  if (searchReq.readyState == 4) 
+      {
+          var ss = document.getElementById('search_suggest');
+                   
+          ss.innerHTML = '';
+            var str = searchReq.responseText;
+            
+         var result=str;
+          
+          
+         
+       if (result=="NoSession")
+       {
+           alert("EASY Session Timed Out.Reloading...");
+       window.location.href = 'EasyLogin.aspx';
+       
+       return false;
+       }
+       
+        str = searchReq.responseText.split("^");
+          if(str.length > 1)
+          {
+           
+          for(i=0; i < str.length -1; i++) 
+          {
+          //Build our element string.  This is cleaner using the DOM, but 
+          //IE doesn't support dynamically added attributes.
+      
+            maxDivId=i;
+            currentDivId=-1;
+            var suggest =  '<div ';
+                suggest += 'id=div'+ i;  
+                suggest += '  style="display:block;width:100%;cursor: pointer;" '
+                suggest += 'onmouseover="javascript:suggestOver(this);" ';
+                suggest += 'onmouseout="javascript:suggestOut(this);" ';
+                if(navigator.appName == "Microsoft Internet Explorer")
+                {
+                    suggest += 'onclick="javascript:setSearch(this.innerText,this);" ';
+                }
+                else
+                {
+                   suggest += 'onclick="javascript:setSearch(this.textContent,this);" '; 
+                }
+                
+               
+                
+                suggest += 'class="suggest_link">' + str[i] + '</div>';
+                ss.innerHTML += suggest;
+                ss.style.visibility='visible';
+           
+                
+              
+          } 
+           }
+           else 
+          {
+          
+             ss.style.visibility='hidden';
+          }
+       
+      
+       
+       }
+       
+       
+       
+       
+       
+       
+       
+ }
+ 
+ //Mouse over function
+ function suggestOver(div_value) 
+{ 
+
+ 
+    div_value.className = 'suggest_link_over';
+    if(navigator.appName == "Microsoft Internet Explorer")
+    {
+        document.getElementById('txtSearch').value = div_value.innerText;
+    }
+    else
+    {
+        document.getElementById('txtSearch').value = div_value.textContent;
+    }
+}
+
+  
+ function scrollOver(div_value) 
+{ 
+
+
+    div_value.className = 'suggest_link_over';
+    if(navigator.appName == "Microsoft Internet Explorer")
+    {
+        document.getElementById('txtSearch').value = div_value.innerText;
+    }
+    else
+    {
+        document.getElementById('txtSearch').value = div_value.textContent;
+    }
+    
+   
+    
+     var lnkDivID=div_value.id;
+ 
+ var lnkDIV= document.getElementById(lnkDivID);
+ var URL=lnkDIV.firstChild.id;
+
+strGlobalURL=URL;
+    
+}
+
+ //Mouse out function
+ function suggestOut(div_value) 
+ {
+    div_value.className = 'suggest_link';
+ }
+ 
+ //Click function
+ function setSearch(value,obj) 
+ {
+
+ var lnkDivID=obj.id;
+ 
+ var lnkDIV= document.getElementById(lnkDivID);
+ var URL=lnkDIV.firstChild.href;
+ 
+ var ss = document.getElementById('search_suggest');
+    
+    document.getElementById('txtSearch').value = ""; 
+    ss.innerHTML = '';
+    ss.style.visibility='hidden';
+        
+  // window.open(URL);
+   return false;
+   
+   
+ }
+ 
+ function scrolldiv(key)
+ {
+   var tempID;
+   
+ 
+    
+    if(key==40)
+    {
+    
+         if(currentDivId==-1)
+         {
+          scrollOver(div0);
+          currentDivId=0;
+         }
+         else
+         {
+            if(currentDivId==maxDivId)
+            {
+                 tempID='div'+maxDivId;  
+                 var a=document.getElementById(tempID);
+                 currentDivId=-1;
+                 suggestOut(a) 
+                 document.getElementById('txtSearch').value=strOriginal;
+            }
+            else
+            {
+                tempID=currentDivId+1;
+                setScroll(currentDivId,tempID)
+            }
+         
+         }
+    }
+    else if (key==38)
+    {
+         if(currentDivId==-1)
+         {
+         tempID=maxDivId;
+         setScroll(maxDivId,maxDivId) 
+         }
+         else
+         {
+         if (currentDivId==0)
+            {
+                 tempID='div'+currentDivId;  
+                 var a=document.getElementById(tempID);
+                 currentDivId=-1;
+                 suggestOut(a) 
+                 document.getElementById('txtSearch').value=strOriginal;
+             
+            }
+          else
+         {
+            tempID=currentDivId-1;
+            setScroll(currentDivId,tempID)  
+            
+         }
+       
+    } 
+    
+ 
+  }
+ }
+function setScroll(Old,New)
+{
+       var tempDivId; 
+       currentDivId=New;
+       
+       tempDivId='div'+Old;  
+       var a=document.getElementById(tempDivId);
+       suggestOut(a)
+       
+       tempDivId='div'+currentDivId;
+       var b=document.getElementById(tempDivId);
+       scrollOver(b);
+
+
+}

@@ -1,0 +1,1037 @@
+var objspDEL;    var hdnDELlistcount=0;var DelegationExecution="";var DelegationError="";
+var UserNameExist="";
+var myAppName="";
+var cntDelegation=0;
+var myUserNameArray = new Array();
+
+function getXMLHTTPRequestDEL_Delegation() 
+{
+    var xRequest=null;
+    if (window.XMLHttpRequest)
+    {
+        xRequest=new XMLHttpRequest();
+    }
+    else if (typeof ActiveXObject != "undefined")
+    {
+        xRequest=new ActiveXObject("Microsoft.XMLHTTP");
+    }
+    else
+    {
+        xRequest = new ActiveXObject("Msxml2.XMLHTTP");
+    }
+    return xRequest;
+}
+ 
+ ////////////////////////////////////////////////////////delegation start//////////////////////////////////////////
+
+function GetSpectrumData_Delegation()
+{
+
+
+ShowLinkButton("Lstdele");
+     
+    document.getElementById("txtDelegationSpectrumValues").value="";
+    
+
+            var ulDelegationElement=document.getElementById('Divdelegation');
+           
+            if (ulDelegationElement.innerHTML!="")
+            {
+            
+                ulDelegationElement.innerHTML="";
+               myUserNameArray = new Array();
+            }    
+
+            if (document.getElementById("txtDelegationSpectrumValues").value=="")
+            {
+            
+                objspDEL=getXMLHTTPRequestDEL_Delegation();
+                if(objspDEL!=null)
+                {
+                    var randomnumber = Math.floor(Math.random()*1000001)
+                    strURLDelegation =strURLDelegation + randomnumber;
+                    strURLDelegation=strURLDelegation+'&strDelApp=Spectrum'
+                    objspDEL.onreadystatechange =  ProcessResponseSpectrum_Delegation;
+                    objspDEL.open("GET", strURLDelegation,  true);
+                    objspDEL.send(null);
+                    
+                                
+                }
+                        return false ;
+            }
+   // }
+}
+ 
+function LoadDelegationDataFromTextbox()
+{
+
+
+    
+ var strDelegationDown="";
+    var strEBSDEL="";    
+    var strTMapDEL="";
+    var strSpectrumDEL="";
+    var strSpectrumMSG="";
+    var strEBSMSG="";
+    var strTmapMSG="";
+    var strALLMSG="";
+   
+    cntDelegation=0; // used for counting delegation links in  LoadDelegationDataFromTextbox   
+    if (document.getElementById("txtDelegationSpectrumValues").value!="")
+    {
+   
+        var txtDelegationSpectrumValues=document.getElementById("txtDelegationSpectrumValues")
+        var retvalsp = escape(txtDelegationSpectrumValues.value);
+  
+        
+      
+            //var lnkDEL=  document.getElementById("lblDelegationMSG");
+    
+   //if (lnkDEL!=null)
+   //{
+            if (retvalsp!=null && retvalsp!="")
+            {
+                var mainSplit = unescape(retvalsp).split("$$");
+               
+                //start user spliting loop for delegation
+            
+                var usersplit=mainSplit[0].split("#")
+                
+                // for message disply
+                 
+                if (mainSplit[0]=="0#")
+                {
+                    strSpectrumMSG="0";
+                }
+                                
+                if (mainSplit[1]=="0#")
+                {
+                    strEBSMSG="0";
+                }  
+              
+                if (mainSplit[2]=="0#")
+                {
+                    strTmapMSG="0";
+                }
+                strALLMSG=strSpectrumMSG+strEBSMSG+strTmapMSG
+                if (strALLMSG!="000")
+                
+                {
+                
+                    var i=0;
+                    if (strSpectrumMSG!="0")
+                    {
+                        for (i=0;i<usersplit.length-1;i++)
+                        {
+                            UserNameExist="";
+                            lnkVisaDelegationshow(usersplit[i])
+                        }
+                    }
+                        /// for ebs data 
+                    if (strEBSMSG!="0")
+                    {
+                        var EBSData=   mainSplit[1].split("#");
+                        for (i=0;i<EBSData.length-1;i++)
+                        {
+                            UserNameExist="";
+                            lnkEBSDelegationshow(EBSData[i]);
+                        }
+                    }  
+                               
+                    /// for TMAP data 
+                    if (strTmapMSG!="0")
+                    {
+                        var TmapData=   mainSplit[2].split("#");
+                        for (i=0;i<TmapData.length-1;i++) {
+                            
+                            UserNameExist="";
+                            lnkTmapDelegationshow(TmapData[i]);
+                        }
+                    }
+                }
+               
+                document.getElementById("hdnDELlistcount").title="Completed";
+                
+                // for Error
+                    
+                if (mainSplit[0]=="")
+                {
+                    strSpectrumDEL="Spectrum,";
+                }
+                                    
+                if (mainSplit[1]=="")
+                {
+                    
+                    strEBSDEL="EBS,";
+                
+                }  
+                
+                if (mainSplit[2]=="")
+                {
+                    strTMapDEL="TMAP,";
+                         
+                }
+               strDelegationDown= strSpectrumDEL+strEBSDEL+strTMapDEL
+                if (strDelegationDown!="")
+                {
+                
+    
+                var strLen = strDelegationDown.length; 
+                strDelegationDown = strDelegationDown.slice(0,strLen-1); 
+
+                HideLinkButton("Lstdele"); 
+                  // lnkDEL.firstChild.replaceData(0,lnkDEL.firstChild.nodeValue.length,"For " +  strDelegationDown + " Delegation Worklist.Please try after some time. " );   
+                }
+                
+              
+                
+////                 // changed this condition for message on 17 jun 2011 if delegation added and no data to display
+////                if (strDelegationDown=="")
+////                {
+////                
+////               
+////                   lnkDEL.firstChild.replaceData(0,lnkDEL.firstChild.nodeValue.length,"No Delegation Found.");   
+////                }
+                
+                 
+                 
+               
+                 ///  if no delegation found in system for all application ie. spectrum,ebs, Tmap
+                if ((strALLMSG!="000") && (strDelegationDown==""))
+                {
+                
+              HideLinkButton("Lstdele"); 
+                  // lnkDEL.firstChild.replaceData(0,lnkDEL.firstChild.nodeValue.length," " );   
+                }
+                
+              
+                
+                // above commented and placed here . changed this condition for message on 17 jun 2011 if delegation added and no data to display
+                if ((strDelegationDown=="") &&  (cntDelegation==0))
+                {
+                
+                
+                 HideLinkButton("Lstdele"); 
+               ShowLinkButton("lstDELMSG");
+                   //lnkDEL.firstChild.replaceData(0,lnkDEL.firstChild.nodeValue.length,"No Delegation Data Found.");   
+                }
+                  
+            }
+            else
+            {
+                document.getElementById("hdnDELlistcount").title="";
+            }
+      //} //if  
+        
+    }
+} 
+ 
+function ProcessResponseSpectrum_Delegation()
+{
+
+
+    
+    var strDelegationDown="";
+    var strEBSDEL = "";
+    var strEBSMSG = "";  
+    var strTMapDEL="";
+    var strVISADEL="";
+    var strVISAMSG="";
+    var strTmapMSG="";
+    var strALLMSG="";    
+       cntDelegation=0; // used for counting delegation links in  LoadDelegationDataFromTextbox    
+    //ShowLinkButton("label");
+
+    if(objspDEL.readyState == 4)
+    {
+        if(objspDEL.status == 200)
+        {
+
+
+            var retvalsp = escape(objspDEL.responseText);
+            
+              
+            if (!CheckIsSessionAvailable(retvalsp)) // check session is availabel if not available then value of retvalsp is "NoSession".
+            {
+            retvalsp=null;
+            //HideLinkButton("lstDELMSG");
+            }
+            //var lnkDEL=  document.getElementById("lblDelegationMSG");
+            if (retvalsp!=null && retvalsp!="")
+            {
+                var mainSplit = unescape(retvalsp).split("$$");
+
+                
+               
+                //start user spliting loop for delegation
+            
+                var usersplit=mainSplit[0].split("#")
+                
+                // for message disply
+                 
+                if (mainSplit[0]=="0#")
+                {
+                    strVISAMSG = "0";
+                }
+                                
+                if (mainSplit[1]=="0#")
+                {
+                    strEBSMSG="0";
+                }  
+              
+                if (mainSplit[2]=="0#")
+                {
+                    strTmapMSG="0";
+                }
+
+                strALLMSG = strVISAMSG + strEBSMSG + strTmapMSG
+                if (strALLMSG!="000")
+                
+                {
+                
+                    var i=0;
+                    if (strVISAMSG != "0")
+                    {
+                        for (i=0;i<usersplit.length-1;i++)
+                        {
+                            UserNameExist="";
+                            lnkVisaDelegationshow(usersplit[i])
+                        }
+                    }
+                        /// for ebs data 
+                    if (strEBSMSG!="0")
+                    {
+                        var EBSData = mainSplit[1].split("#");
+                      
+                        for (i=0;i<EBSData.length-1;i++) {
+                            
+                            UserNameExist="";
+                            lnkEBSDelegationshow(EBSData[i]);
+                        }
+                    }  
+                               
+                    /// for TMAP data 
+                    if (strTmapMSG!="0")
+                    {
+                        var TmapData=   mainSplit[2].split("#");
+                        for (i=0;i<TmapData.length-1;i++)
+                        {
+                            UserNameExist="";
+                            lnkTmapDelegationshow(TmapData[i]);
+                        }
+                    }
+                }
+                var  txtDelegationSpectrumValues=document.getElementById("txtDelegationSpectrumValues");
+                txtDelegationSpectrumValues.value=retvalsp;
+                document.getElementById("hdnDELlistcount").title="Completed";
+                
+                // for Error
+                    
+                if (mainSplit[0]=="")
+                {
+                    strVISADEL = "Spectrum,";
+                }
+                                    
+                if (mainSplit[1]=="")
+                {
+                    
+                    strEBSDEL="EBS,";
+                
+                }  
+                
+                if (mainSplit[2]=="")
+                {
+                    strTMapDEL="TMAP,";
+                         
+                }
+                strDelegationDown = strVISADEL + strEBSDEL + strTMapDEL
+                if (strDelegationDown!="")
+                {
+                
+    
+                var strLen = strDelegationDown.length; 
+                strDelegationDown = strDelegationDown.slice(0,strLen-1); 
+
+                HideLinkButton("Lstdele"); 
+                 //  lnkDEL.firstChild.replaceData(0,lnkDEL.firstChild.nodeValue.length,"For " +  strDelegationDown + " Delegation Worklist.Please try after some time. " );   
+                }
+                
+              
+                
+////                 // changed this condition for message on 17 jun 2011 if delegation added and no data to display
+////                if (strDelegationDown=="")
+////                {
+////                
+////               
+////                   lnkDEL.firstChild.replaceData(0,lnkDEL.firstChild.nodeValue.length,"No Delegation Found.");   
+////                }
+                
+                 
+               
+                 ///  if no delegation found in system for all application ie. spectrum,ebs, Tmap
+                if ((strALLMSG!="000") && (strDelegationDown==""))
+                {
+               
+                
+              
+                 HideLinkButton("Lstdele");
+                  // lnkDEL.firstChild.replaceData(0,lnkDEL.firstChild.nodeValue.length," " );   
+                }
+                
+               
+                // above commented and placed here . changed this condition for message on 17 jun 2011 if delegation added and no data to display
+                if ((strDelegationDown=="") &&  (cntDelegation==0))
+                {
+                
+                
+                
+                HideLinkButton("Lstdele"); 
+                ShowLinkButton("lstDELMSG");
+                  // lnkDEL.firstChild.replaceData(0,lnkDEL.firstChild.nodeValue.length,"No Delegation Data Found.");   
+                }
+                  
+            }
+            else
+            {
+                document.getElementById("hdnDELlistcount").title="";
+            }
+          
+          
+            
+            
+          
+          //end user spliting loop for delegation
+
+        }
+    }
+}
+
+
+
+function lnkshowspectrum_Delegation(retvalDEL)
+{
+
+    strEmpID="";
+    var empid=document.getElementById("hdnEmpID");
+    var mySplitResult =retvalDEL.split(",");
+    if (mySplitResult.length>4)
+    {
+        var myArrayEmpID =mySplitResult[4].split("-");
+        var strEmpID=myArrayEmpID[1];
+
+        var myName =mySplitResult[5].split("-");
+        var EmpName =myName[1];
+        empid.value=myArrayEmpID[1]; // assign this value to text box for future purpose.
+        
+         var myAppArray =mySplitResult[6].split("-");
+          myAppName=myAppArray[1];
+                          
+         var myDelIdArray =mySplitResult[7].split("-"); //added by for delegation id
+         var myDelId=myDelIdArray[1];  //added by for delegation id 
+         
+                       
+    }
+                   
+    if (mySplitResult.length>0)
+    AssignLinkValue_DEL("lstplDEL","lnkplDEL",mySplitResult[0],strEmpID,EmpName,myDelId,myAppName);//added last parameter for delid
+
+    if (mySplitResult.length>1)
+    AssignLinkValue_DEL("lstpenrDEL","lnkpenrDEL",mySplitResult[1],strEmpID,EmpName,myDelId,myAppName);
+
+    if (mySplitResult.length>2)
+    AssignLinkValue_DEL("lstshiftallowanceDEL","lnkshiftallowanceDEL",mySplitResult[2],strEmpID,EmpName,myDelId,myAppName);
+
+    if (mySplitResult.length>3)
+    AssignLinkValue_DEL("lstOncallallowanceDEL","lnkOncallallowanceDEL",mySplitResult[3],strEmpID,EmpName,myDelId,myAppName);
+                          
+                        
+}
+ 
+ 
+ function lnkEBSDelegationshow(retvalDEL)//funstion to split with (,) and show link
+{
+
+
+
+    
+    strEmpID="";
+    var empid=document.getElementById("hdnEmpID");
+    
+    var mySplitResult = retvalDEL.split(",");
+
+    if (mySplitResult.length <= 18) {
+
+        mySplitResult.splice(14,0,'TM_CALL_ALLOWANCE-0');
+        mySplitResult.splice(15, 0, 'TM_SHIFT_ALLOWANCE-0');
+    }
+                        if (mySplitResult.length>15)
+                          {
+                            var myArrayEmpID =mySplitResult[0].split("-");
+                            var strEmpID=myArrayEmpID[1];
+                             var myName =mySplitResult[16].split("-");
+                            var EmpName =myName[1];
+                           empid.value=myArrayEmpID[1]; // assign this value to text box for future purpose.
+                           var myAppArray = mySplitResult[17].split("-");
+
+                           if (myAppArray.length == 3) {
+                               myAppName = myAppArray[1] + '-' + myAppArray[2];  // its for only peoplesoft-rmg and peoplesoft-hr(application name split here so required )
+                           }
+                           else
+                           { 
+                           myAppName=myAppArray[1];
+                       }
+                           var myDelIdArray =mySplitResult[18].split("-"); //added by for delegation id
+                            var myDelId=myDelIdArray[1];  //added by for delegation id          
+                           
+
+                           var mydelempidArray=mySplitResult[19].split("-");  /// this done for MSAT email id  
+                           
+                           var mydelempId = mydelempidArray[1];  /// this done for MSAT email id  
+
+                           EmpName = EmpName + "*" + mydelempId;   /// this done for MSAT email id  
+                        }
+
+                       if (mySplitResult.length > 1 && myAppName == "PeopleSoft HR")
+        AssignLinkValue_DEL("lstMaritalDEL","lnkMarStatusDEL",mySplitResult[1],strEmpID,EmpName,myDelId,myAppName);//added last param for delegation
+                       if (mySplitResult.length > 2 && myAppName == "PeopleSoft HR")
+        AssignLinkValue_DEL("lstNamechDEL","lnkNameChangeDEL",mySplitResult[2],strEmpID,EmpName,myDelId,myAppName);
+                       if (mySplitResult.length > 3 && myAppName == "PeopleSoft HR")
+        AssignLinkValue_DEL("lstpassportDEL","lnkPassportReqDEL",mySplitResult[3],strEmpID,EmpName,myDelId,myAppName);
+                       if (mySplitResult.length > 4 && myAppName == "PeopleSoft HR")
+        AssignLinkValue_DEL("lstProfileDEL","lnkProfilechangeDEL",mySplitResult[4],strEmpID,EmpName,myDelId,myAppName);
+                       if (mySplitResult.length > 5 && myAppName == "PeopleSoft HR")
+        AssignLinkValue_DEL("lstReportchDEL","lnkReportchangeDEL",mySplitResult[5],strEmpID,EmpName,myDelId,myAppName);
+                       if (mySplitResult.length > 6 && myAppName == "PeopleSoft HR")
+        AssignLinkValue_DEL("lstSepReqDEL","lnkSepReQDEL",mySplitResult[6],strEmpID,EmpName,myDelId,myAppName);
+                       if (mySplitResult.length > 7 && myAppName == "PeopleSoft HR")
+        AssignLinkValue_DEL("lstTrainingDEL","lnktrainingReqDEL",mySplitResult[7],strEmpID,EmpName,myDelId,myAppName);
+                       if (mySplitResult.length > 8 && myAppName == "PeopleSoft Finance")
+        AssignLinkValue_DEL("lstExpDEL","lnkExpenseIntDEL",mySplitResult[8],strEmpID,EmpName,myDelId,myAppName);
+                       if (mySplitResult.length > 9 && myAppName == "PeopleSoft Finance")
+        AssignLinkValue_DEL("lstTravelDEL","lnkTravelWSDEL",mySplitResult[9],strEmpID,EmpName,myDelId,myAppName);
+                       if (mySplitResult.length > 10 && myAppName == "PeopleSoft Finance")
+        AssignLinkValue_DEL("lstpoDEL","lnkPOInterfaceDEL",mySplitResult[10],strEmpID,EmpName,myDelId,myAppName);
+                       if (mySplitResult.length > 11 && myAppName == "PeopleSoft Finance")
+        AssignLinkValue_DEL("lstprojectchangeDEL","lnkprojectChangeDEL",mySplitResult[11],strEmpID,EmpName,myDelId,myAppName);
+                       if (mySplitResult.length > 12 && myAppName == "PeopleSoft Finance")
+        AssignLinkValue_DEL("lstServiceOrderDEL", "lnkServiceOrderDEL", mySplitResult[12], strEmpID, EmpName, myDelId, myAppName);
+                       if (mySplitResult.length > 13 && myAppName == "PeopleSoft HR")
+        AssignLinkValue_DEL("lstpl", "lnkplDEL", mySplitResult[13], strEmpID, EmpName, myDelId, myAppName);
+                       if (mySplitResult.length > 14 && myAppName == "PeopleSoft HR")
+        AssignLinkValue_DEL("lstOncallallowanceDEL", "lnkOncallallowanceDEL", mySplitResult[14], strEmpID, EmpName, myDelId, myAppName);
+                       if (mySplitResult.length > 15 && myAppName == "PeopleSoft HR")
+        AssignLinkValue_DEL("lstshiftallowanceDEL", "lnkshiftallowanceDEL", mySplitResult[15], strEmpID, EmpName, myDelId, myAppName);
+        
+
+//    if (mySplitResult.length > 14 && myAppName == "EBS(H)")
+//        AssignLinkValue_DEL("lstsubcon", "lnksubcon", mySplitResult[14], strEmpID, EmpName, myDelId, myAppName);
+//    if (mySplitResult.length > 15 && myAppName == "EBS(H)")
+//        AssignLinkValue_DEL("lstgradechange", "lnkgradechange", mySplitResult[15], strEmpID, EmpName, myDelId, myAppName);
+//    if (mySplitResult.length > 16 && myAppName == "EBS(H)")
+//        AssignLinkValue_DEL("lstOfferexe", "lnkOfferexe", mySplitResult[16], strEmpID, EmpName, myDelId, myAppName);
+//    if (mySplitResult.length > 17 && myAppName == "EBS(H)")
+//        AssignLinkValue_DEL("lstsuboffexe", "lnksuboffexe", mySplitResult[17], strEmpID, EmpName, myDelId, myAppName);
+//    if (mySplitResult.length > 18 && myAppName == "EBS(H)")
+//        AssignLinkValue_DEL("lstAllocationcwp", "lnkAllocationcwp", mySplitResult[18], strEmpID, EmpName, myDelId, myAppName);
+//    if (mySplitResult.length > 19 && myAppName == "EBS(H)")
+//        AssignLinkValue_DEL("lstNDAChklist", "lnkNDAChklist", mySplitResult[19], strEmpID, EmpName, myDelId, myAppName);
+//    if (mySplitResult.length > 20 && myAppName == "EBS(H)")
+//        AssignLinkValue_DEL("lstSOSignoff", "lnkSOSignoff", mySplitResult[20], strEmpID, EmpName, myDelId, myAppName);
+//    if (mySplitResult.length > 21 && myAppName == "EBS(H)")
+//        AssignLinkValue_DEL("lnkIJP", "lnkIJP", mySplitResult[21], strEmpID, EmpName, myDelId, myAppName);
+
+
+
+
+}
+function lnkTmapDelegationshow(retvalDEL) {
+
+
+    
+    strEmpID = "";
+    var empid = document.getElementById("hdnEmpID");
+    var mySplitResult = retvalDEL.split(",");
+    if (mySplitResult.length > 3) {
+        var myArrayEmpID = mySplitResult[4].split("-");
+        var strEmpID = myArrayEmpID[1];
+
+        var myName = mySplitResult[5].split("-");
+        var EmpName = myName[1];
+        empid.value = myArrayEmpID[1]; // assign this value to text box for future purpose.
+        var myAppArray = mySplitResult[6].split("-");
+        myAppName = myAppArray[1];
+
+        var myDelIdArray = mySplitResult[7].split("-"); //added by for delegation id
+        var myDelId = myDelIdArray[1];  //added by for delegation id       
+        var mydelempidArray = mySplitResult[8].split("-");  /// this done for MSAT email id  
+
+        var mydelempId = mydelempidArray[1];  /// this done for MSAT email id  
+
+        EmpName = EmpName + "*" + mydelempId; 
+
+    }
+
+    if (mySplitResult.length > 0)
+        AssignLinkValueTMAPProcessing_DEL("lstSTDISDDEL", "lnkSTDISDDEL", mySplitResult[0], strEmpID, EmpName, myDelId, myAppName); //added last parameter for delid
+
+    if (mySplitResult.length > 1)
+        AssignLinkValueTMAPProcessing_DEL("lstVisitingCardDEL", "lnkVisitingCardDEL", mySplitResult[1], strEmpID, EmpName, myDelId, myAppName);
+
+   
+
+}
+ 
+ 
+ function lnkVisaDelegationshow(retvalDEL) {
+
+
+     
+    strEmpID="";
+    var empid=document.getElementById("hdnEmpID");
+    var mySplitResult =retvalDEL.split(",");
+    if (mySplitResult.length>3)
+    {
+        var myArrayEmpID =mySplitResult[3].split("-");
+        var strEmpID=myArrayEmpID[1];
+
+        var myName =mySplitResult[4].split("-");
+        var EmpName =myName[1];
+        empid.value=myArrayEmpID[1]; // assign this value to text box for future purpose.
+        var myAppArray =mySplitResult[5].split("-");
+        myAppName=myAppArray[1];
+        
+        var myDelIdArray =mySplitResult[6].split("-"); //added by for delegation id
+        var myDelId = myDelIdArray[1];  //added by for delegation id   
+
+        var mydelempidArray = mySplitResult[7].split("-");  /// this done for MSAT email id  
+
+        var mydelempId = mydelempidArray[1];  /// this done for MSAT email id  
+
+        EmpName = EmpName + "*" + mydelempId; 
+    
+    }
+
+         
+    if (mySplitResult.length>0)
+    AssignLinkValueVISAProcessing_DEL("lstvisaApproverDEL","lnkvisaApproverDEL",mySplitResult[0],strEmpID,EmpName,myDelId,myAppName);
+
+    if (mySplitResult.length>1)
+    AssignLinkValueVISAProcessing_DEL("lstvisacobDEL","lnkvisacobDEL",mySplitResult[1],strEmpID,EmpName,myDelId,myAppName);
+
+   if (mySplitResult.length>2)
+       AssignLinkValueVISAProcessing_DEL("lnkvisaLCADEL", "lnkvisaLCADEL", mySplitResult[2], strEmpID, EmpName, myDelId, myAppName);
+
+
+
+
+
+}
+
+
+ 
+  function AssignLinkValueVISAProcessing_DEL(objlst, objlnk,objSplitResult,strEmpID,EmpName,myDelId,myAppName)
+ {
+    var strNameValue;
+    strNameValue=objSplitResult.split(":")
+
+ 
+    if (strNameValue[0]!=0)
+    {
+        if (UserNameExist=="")
+        {
+            InsertDynamicUserNameLink("Extraline",'','','','');   //addded last blank for delegation id
+            InsertDynamicUserNameLink("UserName",'',strEmpID,EmpName,myDelId,myAppName);
+        }
+      
+      if( objlnk=="lnkvisaApproverDEL")
+       {
+           CreateDynamicLinks(objlnk,'Visa Approvals',strEmpID,EmpName,myDelId,strNameValue[0],myAppName);// Added second last param for del id
+       } 
+       if( objlnk=="lnkvisacobDEL")
+       {
+           CreateDynamicLinks(objlnk,'Visa Approvals CB',strEmpID,EmpName,myDelId,strNameValue[0],myAppName);
+       } 
+       if( objlnk=="lnkvisaLCADEL")
+       {
+           CreateDynamicLinks(objlnk,'Visa Approvals LCA',strEmpID,EmpName,myDelId,strNameValue[0],myAppName);
+       } 
+       
+}
+
+}
+
+function AssignLinkValueTMAPProcessing_DEL(objlst, objlnk, objSplitResult, strEmpID, EmpName, myDelId, myAppName) {
+    var strNameValue;
+    strNameValue = objSplitResult.split(":")
+
+
+    if (strNameValue[0] != 0) {
+        if (UserNameExist == "") {
+            InsertDynamicUserNameLink("Extraline", '', '', '', '');   //addded last blank for delegation id
+            InsertDynamicUserNameLink("UserName", '', strEmpID, EmpName, myDelId, myAppName);
+        }
+
+        if (objlnk == "lnkSTDISDDEL") {
+            CreateDynamicLinks(objlnk, 'STD/ISD Approvals', strEmpID, EmpName, myDelId, strNameValue[0], myAppName); // Added second last param for del id
+        }
+        if (objlnk == "lnkVisitingCardDEL") {
+            CreateDynamicLinks(objlnk, 'Visiting Card Approvals', strEmpID, EmpName, myDelId, strNameValue[0], myAppName);
+        }
+        
+
+    }
+}
+ 
+ 
+         
+ function AssignLinkValue_DEL(objlst, objlnk,objSplitResult,strEmpID,EmpName,myDelId,myAppName) //addded for delegation id
+ {
+
+
+
+     
+    var strNameValue;
+    strNameValue=objSplitResult.split("-")
+
+   
+
+    if (strNameValue[1]!=0)
+    {
+        if (UserNameExist=="")
+        {
+            InsertDynamicUserNameLink("Extraline",'','','','');             //addded last blank for delegation id
+            InsertDynamicUserNameLink("UserName",'',strEmpID,EmpName,myDelId,myAppName);
+        }
+      
+       if( objlnk=="lnkplDEL")
+       {
+           CreateDynamicLinks(objlnk,'  Pending Leave Approvals',strEmpID,EmpName,myDelId,strNameValue[1],myAppName);// Added second last param for del id
+       }
+       if( objlnk=="lnkpenrDEL")
+       {
+           CreateDynamicLinks(objlnk,'Pending Regularization Approvals',strEmpID,EmpName,myDelId,strNameValue[1],myAppName);
+           
+       }
+       if( objlnk=="lnkshiftallowanceDEL")
+       {
+           CreateDynamicLinks(objlnk,'Shift Allowance Approvals',strEmpID,EmpName,myDelId,strNameValue[1],myAppName);
+       }
+       if( objlnk=="lnkOncallallowanceDEL")
+       {
+          CreateDynamicLinks(objlnk,'On Call Allowance Approvals',strEmpID,EmpName,myDelId,strNameValue[1],myAppName);
+       }
+       if( objlnk=="lnkMarStatusDEL")
+       {
+           CreateDynamicLinks(objlnk,'Marital Status Approvals',strEmpID,EmpName,myDelId,strNameValue[1],myAppName);
+       }
+       if( objlnk=="lnkNameChangeDEL")
+       {
+           CreateDynamicLinks(objlnk,'Name Change Approvals',strEmpID,EmpName,myDelId,strNameValue[1],myAppName);
+       }
+       if( objlnk=="lnkPassportReqDEL")
+       {
+           CreateDynamicLinks(objlnk,'Passport Request Approvals',strEmpID,EmpName,myDelId,strNameValue[1],myAppName);
+       }
+       if( objlnk=="lnkProfilechangeDEL")
+       {
+           CreateDynamicLinks(objlnk,'Profile Change Approvals',strEmpID,EmpName,myDelId,strNameValue[1],myAppName);
+       }
+       if( objlnk=="lnkReportchangeDEL")
+       {
+           CreateDynamicLinks(objlnk,'Reporting Change Approvals',strEmpID,EmpName,myDelId,strNameValue[1],myAppName);
+       }
+       if( objlnk=="lnkSepReQDEL")
+       {
+           CreateDynamicLinks(objlnk,'Employee Seperation Approvals',strEmpID,EmpName,myDelId,strNameValue[1],myAppName);
+       }
+       if( objlnk=="lnktrainingReqDEL")
+       {
+           CreateDynamicLinks(objlnk,'Training Request Approvals',strEmpID,EmpName,myDelId,strNameValue[1],myAppName);
+       }
+       if( objlnk=="lnkExpenseIntDEL")
+       {
+           CreateDynamicLinks(objlnk,'Expense Request Approvals',strEmpID,EmpName,myDelId,strNameValue[1],myAppName);
+       }
+       if( objlnk=="lnkTravelWSDEL")
+       {
+           CreateDynamicLinks(objlnk,'Travel Request Approvals',strEmpID,EmpName,myDelId,strNameValue[1],myAppName);
+       }
+       if( objlnk=="lnkPOInterfaceDEL")
+       {
+           CreateDynamicLinks(objlnk,'Purchase Order Approvals',strEmpID,EmpName,myDelId,strNameValue[1],myAppName);
+       }
+       if( objlnk=="lnkprojectChangeDEL")
+       {
+           CreateDynamicLinks(objlnk,'Project Request Approvals',strEmpID,EmpName,myDelId,strNameValue[1],myAppName);
+       }
+       if( objlnk=="lnkServiceOrderDEL")
+       {
+           CreateDynamicLinks(objlnk,'Service Order Approvals',strEmpID,EmpName,myDelId,strNameValue[1],myAppName);
+       }
+
+
+       if (objlnk == "lnksubcon") {
+           CreateDynamicLinks(objlnk, 'Sub Contract Approval', strEmpID, EmpName, myDelId, strNameValue[1], myAppName);
+       }
+       if (objlnk == "lnkgradechange") {
+           CreateDynamicLinks(objlnk, 'Grade & Location Change Approval', strEmpID, EmpName, myDelId, strNameValue[1], myAppName);
+       }
+       if (objlnk == "lnkOfferexe") {
+           CreateDynamicLinks(objlnk, 'Offer Exception Approval', strEmpID, EmpName, myDelId, strNameValue[1], myAppName);
+       }
+       if (objlnk == "lnksuboffexe") {
+           CreateDynamicLinks(objlnk, 'Sub Offer Exception Approval', strEmpID, EmpName, myDelId, strNameValue[1], myAppName);
+       }
+       if (objlnk == "lnkAllocationcwp") {
+           CreateDynamicLinks(objlnk, 'Allocation Request Approval', strEmpID, EmpName, myDelId, strNameValue[1], myAppName);
+       }
+       if (objlnk == "lnkSOSignoff") {
+           CreateDynamicLinks(objlnk, 'SO SignOff Approval', strEmpID, EmpName, myDelId, strNameValue[1], myAppName);
+       }
+       if (objlnk == "lnkNDAChklist") {
+           CreateDynamicLinks(objlnk, 'NDA Chklst Entry & Exit Approval', strEmpID, EmpName, myDelId, strNameValue[1], myAppName);
+       }
+       if (objlnk == "lnkIJP") {
+           CreateDynamicLinks(objlnk, 'IJP TMG Evalution Approval', strEmpID, EmpName, myDelId, strNameValue[1], myAppName);
+       }
+
+       hdnDELlistcount= document.getElementById("hdnDELlistcount");
+       hdnDELlistcount.value= parseInt(hdnDELlistcount.value) + 1;
+             
+    }
+        
+}
+
+
+function CreateDynamicLinks(objlnk,strCaption,strEmpID,EmpName,myDelId,objSplitResult,myAppName)//Added second last parameter for del id
+{
+
+
+    
+    var image = "";
+    var id="";
+    var boldanchor="";
+    var anchor="";
+    var li="";
+    var linkCaption = "";
+
+    var EmpNamearray = EmpName.split("*"); //changed for msat integration
+    EmpName = EmpNamearray[0];  //changed for msat integration
+
+
+    var strEmpIDBracket=" ("+EmpName+")" 
+   
+    strCaption=strCaption+" - "+objSplitResult;
+
+    if (objSplitResult>=0)
+    {
+   
+        var UserDivExist=document.getElementById('ulDelegation'+strEmpID);
+        var ulElement=document.getElementById('ulDelegation');
+        var ulElementUser;
+      
+        if (strEmpID=="")
+        {
+          ulElementUser=document.getElementById('ulDelegation'+strEmpID);
+         }
+         else
+         {
+         ulElementUser=document.getElementById('ulDelegation'+strEmpID);
+         
+         }
+        
+         var DivDelegationUser=document.getElementById('Divdelegation');
+
+         id = myDelId + '$' + strEmpID + '_' + myAppName + '*' + EmpNamearray[1];  //changed for msat integration. added last parameter for delegation id
+         ///id = objlnk + '_' + strEmpID + '_' + myDelId + '_' + myAppName + '*' + EmpNamearray[1];  //changed for msat integration. added last parameter for delegation id
+       
+        anchor = document.createElement('a');
+        li = document.createElement('li');
+        li.className = 'list-group-item';
+        linkCaption =document.createTextNode(strCaption)
+        anchor.setAttribute('id', objlnk);
+        anchor.setAttribute('Name', strEmpID);
+        anchor.className = 'normalblack';
+
+        if (objlnk == "lnkTravelWSDEL1") {
+//            image = document.createElement('img');
+//            image.setAttribute('src', 'images/New.gif');
+
+            anchor.setAttribute('href', "javascript:OpentravelwindowDEL('" + id + "','" + EmpName + "')");
+
+        }
+        else {
+
+            ///anchor.setAttribute('href', "javascript:__doPostBack('" + id + "','')");
+            anchor.setAttribute('href', "javascript:void(0);");
+
+            anchor.onclick = function () {
+
+                CallDelegationWindowNew(objlnk, id, "DelInfoWorklist");
+
+            }
+        }
+        anchor.appendChild(linkCaption);
+        li.appendChild(anchor);
+//        if (objlnk == "lnkTravelWSDEL") {
+//            li.appendChild(image);
+//        }
+        UserNameExist="Y";
+        
+        ulElementUser.appendChild(li);
+        DivDelegationUser.appendChild(ulElementUser);
+         //li.appendChild(DivDelegationUser);
+       //  ulElement.appendChild(li);
+        cntDelegation=cntDelegation+1; // used for counting delegation links in     
+        
+        
+    }
+ 
+ }
+ 
+function RemoveDynamicLinks(objlnk,strCaption,strEmpID,EmpName,objSplitResult)
+{
+
+
+
+    var id="";
+    var boldanchor="";
+    var anchor="";
+    var li="";
+    var linkCaption="";
+    var strEmpIDBracket=" ("+EmpName+")" 
+   
+    strCaption=strCaption+" - "+objSplitResult;
+
+    if (objSplitResult>=0)
+    {
+        var ulElement=document.getElementById('ulWorklist');
+        id=objlnk +'_'+strEmpID  
+        anchor = document.createElement('a');
+        li = document.createElement('li');
+        li.className = 'list-group-item';
+        linkCaption =document.createTextNode(strCaption)
+        anchor.setAttribute('id', id);
+        anchor.setAttribute('Name', strEmpID);
+        anchor.className = 'normalblack';
+        anchor.setAttribute('href', "javascript:__doPostBack('"+ id +"','')");
+        anchor.removeChild(linkCaption);
+        li.removeChild(anchor);
+        ulElement.removeChild(li);
+        UserNameExist="Y";
+    }
+ 
+ }
+ 
+function InsertDynamicUserNameLink(objlnk,strCaption,strEmpID,EmpName,myDelId,myAppName)
+ {
+     
+        var id="";
+        var boldanchor="";
+        var anchor="";
+        var li="";
+        var linkCaption="";
+          
+     
+        var strEmpIDBracket="";
+        
+        var j;
+        var strFount = "";
+        
+        var EmpNamearray = EmpName.split("*"); //changed for msat integration
+        EmpName = EmpNamearray[0];  //changed for msat integration
+
+      
+        for (j=0;j<myUserNameArray.length;j++)
+        {
+            if (myUserNameArray[j]==EmpName)
+            {
+                j= myUserNameArray.length;
+                strFount="Y";
+            }
+            
+        }
+          myUserNameArray[myUserNameArray.length+1]=EmpName;
+         
+        if (EmpName!="")
+        {
+         strEmpIDBracket="Worklist for " + EmpName ;//+" - "
+          
+//              if(myAppName == "PeopleSoft-RMG")
+//              {
+//                 strEmpIDBracket="EBS(F) Worklist for " + EmpName ;//+" - "
+//              }
+//              else if(myAppName == "PeopleSoft-HR")
+//              {
+//                 strEmpIDBracket="EBS(H) Worklist for " + EmpName ;//+" - "
+//              }
+//               else if(myAppName == "Spectrum")
+//              {
+//              
+//                 strEmpIDBracket="Spectrum Worklist for " + EmpName ;//+" - "
+//              }
+//               else if(myAppName == "Visa Processing")
+//              {
+//                 strEmpIDBracket="Visa Processing Worklist for " + EmpName ;//+" - "
+//              }
+//              else
+//              {
+//                 strEmpIDBracket="Worklist for " + EmpName ;//+" - "
+//              }
+             
+         }
+         if (strFount!="Y")
+         {
+   
+         strCaption=strCaption+strEmpIDBracket
+          var ulElement=document.getElementById('ulDelegation');
+          var ulElementUser=document.createElement('ul');
+          ulElementUser.setAttribute('id', 'ulDelegation' + strEmpID);
+          ulElementUser.className = 'list-group no-margn nicescroll todo-list';
+          var DivDelegationUser=document.getElementById('Divdelegation');
+ 
+         id=objlnk +'_'+strEmpID +'_'+ myDelId +'_' +  myAppName  //added last parameter for delegation id  
+         anchor = document.createElement('div');
+         li = document.createElement('li');
+         li.className = 'list-group-item';
+         linkCaption =document.createTextNode(strCaption)
+      
+         anchor.setAttribute('id', id);
+         anchor.setAttribute('Name', strEmpID);
+         anchor.className = 'boldblack';
+                  
+         anchor.appendChild(linkCaption);
+         li.appendChild(anchor);
+         //ulElement.appendChild(li);
+         
+         ulElementUser.appendChild(li);
+         
+         DivDelegationUser.appendChild(ulElementUser);
+   }
+ }
+
+ 
+ ///////////////////////////////////////////////////////delegation End//////////////////////////////////////////
+  function HideLinkButton_DEL(objlst)
+         {
+          if (objlst!=null)
+            {
+             var lstname =  document.getElementById(objlst);
+             lstname.style.display="none";
+           }
+         
+         }
+       
+//         function ShowLinkButton(objlst)
+//         {
+//         if (objlst!=null)
+//            {
+//             var lst =  document.getElementById(objlst);
+//        
+//           lst.style.display="block";
+//           }
+//          
+//         }
+         
+         
+         //////////////////////

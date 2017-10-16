@@ -5,17 +5,21 @@ import java.sql.DriverManager;
 public class DataConnect {
 
     public static Connection getConnection() {
+        Connection con=null;
         try {
-            System.out.println("in getConnection");
+            //System.out.println("in getConnection");
             Class.forName("com.mysql.jdbc.Driver");
-            Connection con = DriverManager.getConnection(
-                    "jdbc:mysql://localhost:3306/cardb", "root", "admin");
-            System.out.println("exit getConnection");
+            con = DriverManager.getConnection(
+                    "jdbc:mysql://172.30.149.90:3306/crm", "root", "admin");
+            //System.out.println("exit getConnection");
             return con;
         } catch (Exception ex) {
             System.out.println("Database.getConnection() Error -->"
                     + ex.getMessage());
             return null;
+        }
+        finally{
+           // close(con);
         }
     }
 

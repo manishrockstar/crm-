@@ -1,0 +1,126 @@
+﻿var objVISA; var hdnVISAlistCount;
+
+
+function GetVisaAjaxData()//function called in EASYhome foe accesing visa data
+{
+    
+    document.getElementById("txtVISAvalues").value = "";
+
+    ShowLinkButton("label");
+
+    var lnk = document.getElementById("labeltext");
+    lnk.firstChild.replaceData(0, lnk.firstChild.nodeValue.length, "Worklist data loading please wait...");
+    if (document.getElementById("txtVISAvalues").value == "") {
+        objVISA = getXMLHTTPRequest();
+        if (objVISA != null) {
+            var randomnumber = Math.floor(Math.random() * 1000001)
+            strURLVISA = strURLVISA + randomnumber;
+            objVISA.onreadystatechange = ProcessResponseVisa;
+            objVISA.open("GET", strURLVISA, true);
+            objVISA.send(null);
+        }
+        return false;
+    }
+
+}
+
+
+
+function LoadVisadatafromTextbox() {
+
+
+    if (document.getElementById("txtVISAvalues").value != "") {
+        var txtVISAvalues = document.getElementById("txtVISAvalues")
+        lnkshowVisa(txtVISAvalues.value);
+        intWebserviceCount = intWebserviceCount + 1;
+        document.getElementById("hdnVISAlistCount").title = "Completed";
+        
+        
+        //ShowMessage("tmap");   
+        
+    }
+    else {
+        //intWebserviceCount = intWebserviceCount + 1;
+    }
+//    hdnVISAlistCount = document.getElementById("hdnVISAlistCount");
+    //    hdnVISAlistCount.value = parseInt(hdnVISAlistCount.value) + 1;
+    
+    showmsg("visa");
+}
+
+function ProcessResponseVisa() {
+   
+
+
+    ShowLinkButton("label");
+    //    var lnk=  document.getElementById("labeltext");
+    //    lnk.firstChild.replaceData(0,lnk.firstChild.nodeValue.length,"Worklist data loading please wait...");   
+    if (objVISA.readyState == 4) {
+        if (objVISA.status == 200) {
+
+
+            var retvalVisa = escape(objVISA.responseText);
+
+
+
+
+
+            if (CheckIsSessionAvailable(retvalVisa) == true) {
+                if (retvalVisa != null && retvalVisa != "NoSession" && retvalVisa != "" && retvalVisa != "IntranetNoSession" && retvalVisa != "InternetNoSession") {
+
+
+                    lnkshowVisa(retvalVisa); //retvalVisa gives the data from Visa webserivce
+                    document.getElementById("hdnVISAlistCount").title = "Completed";
+
+                }
+                else {
+                    document.getElementById("hdnShowMessage").value = document.getElementById("hdnShowMessage").value + "Visa,"
+                    document.getElementById("hdnVISAlistCount").title = "Error";
+
+                }
+            }
+            intWebserviceCount = intWebserviceCount + 1;
+
+            
+            
+            showmsg("Visa");
+
+
+        }
+    }
+}
+
+function lnkshowVisa(retval)//funstion to split with (,) and again with (:)and show link
+{
+    var mySplitResult = unescape(retval).split(",");
+
+        if (mySplitResult.length > 0)
+            AssignLinkValueVisa("lstvisaApprover", "lnkvisaApprover", mySplitResult[0]);
+        if (mySplitResult.length > 1)
+            AssignLinkValueVisa("lstvisacob", "lnkvisacob", mySplitResult[1]);
+        if (mySplitResult.length > 2)
+            AssignLinkValueVisa("lstvisaLCA", "lnkvisaLCA", mySplitResult[2]);
+}
+
+
+function AssignLinkValueVisa(objlst, objlnk, objSplitResult) {
+
+
+    var strNameValue;
+    strNameValue = objSplitResult.split(":")
+    if (strNameValue[0] != 0) {
+        //newly added
+        document.getElementById("hdnWorklistMSG").value = 1;
+        MSG = 1;
+        //
+        ShowLinkButton(objlst);
+        var browserName = navigator.appName
+        var lnk = document.getElementById(objlnk);
+        var elem = lnk;
+        var bold = document.createElement("b");
+        bold.appendChild(document.createTextNode("- " + strNameValue[0]));
+        elem.appendChild(bold);
+        hdnVISAlistCount = document.getElementById("hdnVISAlistCount");
+        hdnVISAlistCount.value = parseInt(hdnVISAlistCount.value) + 1;
+    }
+}

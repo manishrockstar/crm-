@@ -23,6 +23,7 @@ public class TableBean {
 
         int i = 0;
         perInfoAll = new ArrayList();
+        
         try {
 
             con = DataConnect.getConnection();
@@ -30,23 +31,32 @@ public class TableBean {
 
             if (user.equalsIgnoreCase(s3)) {
                 rs = ps.executeQuery("select * from reg");
+                System.out.println(" getting all tickets ");
             } else {
                 rs = ps.executeQuery("select * from reg where emp_id=" + user);
             }
             while (rs.next()) {
-                System.out.println(rs.getString(9));
+                //System.out.println(rs.getString(9));
 
                 perInfoAll.add(i, new PerInfo(rs.getString(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5), rs.getString(6), rs.getString(7), rs.getString(8), rs.getString(9)));
                 i++;
             }
-            System.out.println("*********" + user + "***********************");
+            //System.out.println("*********" + user + "***********************");
             System.out.println(i);
         } catch (Exception e) {
             System.out.println("Error Data : " + e.getMessage());
         }
+        finally {
+			DataConnect.close(con);
+		}
 
         return perInfoAll;
        
+    }
+    public String insertData()
+    {
+        //System.out.println("**********table bean method");
+        return("");
     }
 
 }

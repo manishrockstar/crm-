@@ -22,6 +22,8 @@ public class persondetails{
 	Long mobileno;
         String person;
         String status;
+        String assignedName;
+        String assigned_emp_id;
 
     public String getStatus() {
         return status;
@@ -112,6 +114,11 @@ public class persondetails{
 	public void setMobileno(Long mobileno){
 		this.mobileno = mobileno;
 	}
+        public String assignTicket()throws SQLException
+        {
+            //System.out.println(person);
+            return "";
+        }
         public String insertData() throws SQLException{
             //System.out.println("CheckValidUser");
 		boolean valid = RegDAO.insert(this);
@@ -122,6 +129,21 @@ public class persondetails{
 			return "resultforsuccess";
 		}
                 return "resultforsuccess";
+        }
+        public String assignTicketTo(String permanentName,String emp_id)throws SQLException
+        {
+         assignedName=permanentName;
+         assigned_emp_id=emp_id;
+         boolean valid = RegDAO.insertAssignTicket(assignedName,assigned_emp_id);
+		if (valid) {
+			HttpSession session = SessionUtils.getSession();
+			
+                        System.out.print("success***************");
+			return "resultforsuccess";
+		}
+                else{
+                return "resultforfail";   
+        }
         }
         
 }

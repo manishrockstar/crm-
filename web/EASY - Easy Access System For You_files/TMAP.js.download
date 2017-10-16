@@ -1,0 +1,131 @@
+var objtmap; var hdnTmaplistCount;
+
+
+function GetTmapAjaxData()//function called in EASYhome foe accesing TMAP data
+{
+   
+
+    document.getElementById("txtTMAPvalues").value = "";
+
+    ShowLinkButton("label");
+
+    var lnk = document.getElementById("labeltext");
+    lnk.firstChild.replaceData(0, lnk.firstChild.nodeValue.length, "Worklist data loading please wait...");
+    if (document.getElementById("txtTMAPvalues").value == "") {
+        objtmap = getXMLHTTPRequest();
+        if (objtmap != null) {
+            var randomnumber = Math.floor(Math.random() * 1000001)
+            strURLtmap = strURLtmap + randomnumber;
+            objtmap.onreadystatechange = ProcessResponseTMAP;
+            objtmap.open("GET", strURLtmap, true);
+            objtmap.send(null);
+        }
+        return false;
+    }
+
+}
+
+
+
+function LoadTMAPdatafromTextbox() {
+
+    
+    if (document.getElementById("txtTMAPvalues").value != "") {
+        var txtTMAPvalues = document.getElementById("txtTMAPvalues")
+        lnkshowTMAP(txtTMAPvalues.value);
+        intWebserviceCount = intWebserviceCount + 1;
+        document.getElementById("hdnTmaplistCount").title = "Completed";
+        //ShowMessage("tmap");   
+        
+    }
+    else {
+        //intWebserviceCount = intWebserviceCount + 1;
+    }
+//    hdnTmaplistCount = document.getElementById("hdnTmaplistCount");
+    //    hdnTmaplistCount.value = parseInt(hdnTmaplistCount.value) + 1;
+    
+    showmsg("tmap");
+}
+
+function ProcessResponseTMAP() {
+
+    
+    ShowLinkButton("label");
+    //    var lnk=  document.getElementById("labeltext");
+    //    lnk.firstChild.replaceData(0,lnk.firstChild.nodeValue.length,"Worklist data loading please wait...");   
+    if (objtmap.readyState == 4) {
+        if (objtmap.status == 200) {
+
+
+            var retvaltmap = objtmap.responseText;
+
+
+
+            
+
+            if (retvaltmap != null && retvaltmap != "NoSession" && retvaltmap != "" && retvaltmap != "IntranetNoSession" && retvaltmap != "InternetNoSession") {
+
+
+                lnkshowTMAP(retvaltmap); //retvaltmap gives the data from tmap webserivce
+                document.getElementById("hdnTmaplistCount").title = "Completed";
+                MSG = 1;
+            }
+            else {
+                document.getElementById("hdnTmaplistCount").title = "Error";
+                document.getElementById("hdnShowMessage").value = document.getElementById("hdnShowMessage").value + "Corporate Services,"
+                
+            }
+            intWebserviceCount = intWebserviceCount + 1;
+            
+            showmsg("tmap");
+
+
+        }
+    }
+}
+
+function lnkshowTMAP(retval)//funstion to split with (,) and again with (:)and show link
+{
+
+   
+    var mySplitResult = retval.split(",");
+    if (mySplitResult.length > 0) {
+        var RoleName = mySplitResult[0].split(":");
+        if (RoleName[2] == "Approver") {
+            AssignLinkValueTmap("lstSTD", "lnkSTD", mySplitResult[0]);
+        }
+        else {
+            AssignLinkValueTmap("lstSTDAdmin", "lnkSTDAdmin", mySplitResult[0]);
+        }
+    }
+    if (mySplitResult.length > 1)
+        AssignLinkValueTmap("lstVCard", "lnkVCard", mySplitResult[1]);
+    if (mySplitResult.length > 2)
+        AssignLinkValueTmap("lstVehicleSticker", "lnkVehicleSticker", mySplitResult[2]);
+    if (mySplitResult.length > 3)
+        AssignLinkValueTmap("lstBusRegistration", "lnkBusRegistration", mySplitResult[3]);
+
+}
+
+
+function AssignLinkValueTmap(objlst, objlnk, objSplitResult) {
+
+
+    var strNameValue;
+    strNameValue = objSplitResult.split(":")
+    if (strNameValue[0] != 0) {
+        //newly added
+        document.getElementById("hdnWorklistMSG").value = 1;
+        MSG = 1;
+        //
+        ShowLinkButton(objlst);
+        var browserName = navigator.appName
+        var lnk = document.getElementById(objlnk);
+        var elem = lnk;
+        var bold = document.createElement("b");
+        bold.appendChild(document.createTextNode("- " + strNameValue[0]));
+        elem.appendChild(bold);
+        hdnTmaplistCount = document.getElementById("hdnTmaplistCount");
+        hdnTmaplistCount.value = parseInt(hdnTmaplistCount.value) + 1;
+    }
+}

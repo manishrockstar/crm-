@@ -1,0 +1,149 @@
+var obj;
+var hdnEBSlistCount;
+
+ 
+function GetDataUsingAJAX()//function called in EASYhome foe accesing EBS data
+{
+    
+    document.getElementById("txtvalues").value="";
+ 
+    ShowLinkButton("label");
+    var lnk=  document.getElementById("labeltext");
+    lnk.firstChild.replaceData(0,lnk.firstChild.nodeValue.length,"Worklist data loading please wait...");
+    if (document.getElementById("txtvalues").value=="")
+    {
+        obj=getXMLHTTPRequest();
+        if(obj!=null)
+        {
+            var randomnumber = Math.floor(Math.random()*1000001)
+            strURL = strURL + randomnumber;
+            obj.onreadystatechange =  ProcessResponse;
+            obj.open("GET", strURL,  true); //comes from Home.js
+            obj.send(null);    
+        }
+        return false;
+    }
+}
+     
+     
+function LoadEBSdatafromTextbox()
+{
+
+    
+    if (document.getElementById("txtvalues").value!="")
+    {
+        var txtvalues=document.getElementById("txtvalues")
+        lnkshow(txtvalues.value);
+       intWebserviceCount=intWebserviceCount+1;
+        document.getElementById("hdnEBSlistCount").title="Completed";              
+       //ShowMessage("EBS"); 
+        
+    }
+     else
+    {
+        //intWebserviceCount=intWebserviceCount+1;
+    }
+//    hdnEBSlistCount = document.getElementById("hdnEBSlistCount");
+    //    hdnEBSlistCount.value = parseInt(hdnEBSlistCount.value) + 1;
+    
+    showmsg("EBS");
+}
+            
+            
+function ProcessResponse()
+{
+    
+    ShowLinkButton("label");
+    
+//    var lnk=  document.getElementById("labeltext");
+//    lnk.firstChild.replaceData(0,lnk.firstChild.nodeValue.length,"Data loading please wait...");   
+    if(obj.readyState == 4)
+    {  
+        if(obj.status == 200) {
+           
+            var retval=obj.responseText;
+
+                
+                if (retval != null && retval != "NoSession" && retval != "" && retval != "IntranetNoSession" && retval != "InternetNoSession") {
+                    lnkshow(retval); //retval gives the data from ajax 
+                    document.getElementById("hdnEBSlistCount").title = "Completed";
+                    MSG = 1;
+                }
+                else {
+                    document.getElementById("hdnEBSlistCount").title = "Error";
+                    document.getElementById("hdnShowMessage").value = document.getElementById("hdnShowMessage").value + "PACE,"
+
+                }
+            
+            intWebserviceCount = intWebserviceCount + 1;
+            
+       
+            showmsg("EBS");  // in Home.js 
+            
+          
+        }
+    }
+}      
+      
+      
+function lnkshow(retval)//funstion to split with (,) and show link
+{
+    
+    var mySplitResult = retval.split(",");
+   
+     if (mySplitResult.length>1)
+        AssignLinkValue("lstMarital","lnkMarStatus",mySplitResult[1]);
+    if (mySplitResult.length>2)
+        AssignLinkValue("lstNamech","lnkNameChange",mySplitResult[2]);
+    if (mySplitResult.length>3)
+        AssignLinkValue("lstpassport","lnkPassportReq",mySplitResult[3]);
+    if (mySplitResult.length>4)
+        AssignLinkValue("lstProfile","lnkProfilechange",mySplitResult[4]);
+    if (mySplitResult.length>5)
+        AssignLinkValue("lstReportch","lnkReportchange",mySplitResult[5]);
+    if (mySplitResult.length>6)
+        AssignLinkValue("lstSepReq","lnkSepReQ",mySplitResult[6]);
+    if (mySplitResult.length>7)
+        AssignLinkValue("lstTraining","lnktrainingReq",mySplitResult[7]);
+    if (mySplitResult.length>8)
+        AssignLinkValue("lstExp","lnkExpenseInt",mySplitResult[8]);
+    if (mySplitResult.length>9)
+        AssignLinkValue("lstTravel","lnkTravelWS",mySplitResult[9]);
+    if (mySplitResult.length>10)
+        AssignLinkValue("lstpo","lnkPOInterface",mySplitResult[10]);
+    if (mySplitResult.length>11)
+        AssignLinkValue("lstprojectchange","lnkprojectChange",mySplitResult[11]);
+    if (mySplitResult.length>12)
+        AssignLinkValue("lstServiceOrder", "lnkServiceOrder", mySplitResult[12]);
+    if (mySplitResult.length > 13)
+        AssignLinkValue("lstpl", "lnkPL", mySplitResult[13]);
+   if (mySplitResult.length > 14)
+       AssignLinkValue("lstOncallallowance", "lnkOncallallowance", mySplitResult[14]);
+   if (mySplitResult.length > 15)
+       AssignLinkValue("lstshiftallowance", "lnkshiftallowance", mySplitResult[15]);
+    
+}
+ 
+function AssignLinkValue(objlst, objlnk,objSplitResult)//function to split value from data and show the link 
+{
+    var strNameValue;
+    strNameValue=objSplitResult.split("-")
+    if (strNameValue[1]!=0)
+    {
+        //newly added
+        document.getElementById("hdnWorklistMSG").value = 1;
+        MSG = 1;
+        //
+        ShowLinkButton(objlst);
+        var browserName=navigator.appName
+        var lnk =  document.getElementById(objlnk);
+        var elem =lnk;
+        var bold = document.createElement("span");
+        bold.className = "badge bg-info";
+        bold.appendChild(document.createTextNode(strNameValue[1]));
+        elem.appendChild(document.createTextNode("- "));
+        elem.appendChild(bold);
+        hdnEBSlistCount= document.getElementById("hdnEBSlistCount");
+        hdnEBSlistCount.value= parseInt(hdnEBSlistCount.value) + 1;  
+    }
+}

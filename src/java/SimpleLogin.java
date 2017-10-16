@@ -36,7 +36,7 @@ public class SimpleLogin {
     }
 
     public String CheckValidUser() {
-        System.out.println("CheckValidUser");
+        //System.out.println("CheckValidUser");
 
         boolean valid = LoginDAO.validate(loginname, password);
         if (valid) {
